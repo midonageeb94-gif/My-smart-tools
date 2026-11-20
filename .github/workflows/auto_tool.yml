@@ -4,11 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       custom_idea:
-        description: 'فكرة أداة محددة (اتركها فارغة ليختار Gemini تلقائياً)'
+        description: 'فكرة أداة محددة (اختياري)'
         required: false
         default: ''
   schedule:
-    # يعمل تلقائياً كل يوم الساعة 10 صباحاً بتوقيت UTC (12 ظهراً بتوقيت القاهرة)
     - cron: '0 10 * * *'
 
 permissions:
