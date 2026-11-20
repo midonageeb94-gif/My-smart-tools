@@ -1,0 +1,41 @@
+name: Auto Tool Factory
+
+on:
+  workflow_dispatch:
+    inputs:
+      custom_idea:
+        description: 'فكرة أداة محددة (اتركها فارغة ليختار Gemini تلقائياً)'
+        required: false
+        default: ''
+  schedule:
+    # يعمل تلقائياً كل يوم الساعة 10 صباحاً بتوقيت UTC (12 ظهراً بتوقيت القاهرة)
+    - cron: '0 10 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  build-tool:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate New Tool with Gemini
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CUSTOM_IDEA: ${{ github.event.inputs.custom_idea }}
+        run: python generator.py
+
+      - name: Commit and Push New Tool
+        run: |
+          git config user.name "AutoToolsBot"
+          git config user.email "bot@users.noreply.github.com"
+          git add .
+          git commit -m "Auto-generated new micro-tool" || exit 0
+          git push
