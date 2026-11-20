@@ -2,6 +2,7 @@ import os
 import json
 import re
 import socket
+import random
 import urllib.request
 import urllib.error
 from datetime import datetime
@@ -42,15 +43,11 @@ def get_candidate_models():
         else:
             gemma_models.append(name)
 
-    # ترتيب موديلات flash بحيث تكون الأحدث أولاً
     gemini_flash.sort(reverse=True)
-    ordered = gemini_flash + gemini_others + gemma_models
-    print("الموديلات المتاحة في حسابك:", ordered)
-    return ordered
+    return gemini_flash + gemini_others + gemma_models
 
 def extract_json_from_text(text):
     text = text.strip()
-    # إزالة علامات markdown إن وجدت
     text = re.sub(r"^```(?:json)?\s*", "", text)
     text = re.sub(r"\s*```$", "", text)
     match = re.search(r"\{.*\}", text, re.DOTALL)
@@ -71,7 +68,7 @@ def call_gemini(prompt):
         print(f"جاري تجربة الموديل: {model_name} ...")
         url = f"https://generativelanguage.googleapis.com/v1beta/{model_name}:generateContent?key={API_KEY}"
         
-        gen_config = {"temperature": 0.7}
+        gen_config = {"temperature": 0.75}
         if "gemini" in model_name.lower():
             gen_config["responseMimeType"] = "application/json"
 
@@ -88,7 +85,6 @@ def call_gemini(prompt):
             with urllib.request.urlopen(req, timeout=65) as response:
                 data = json.loads(response.read().decode("utf-8"))
                 raw_text = data["candidates"][0]["content"]["parts"][0]["text"]
-                # التحقق من أن الرد JSON سليم قبل الاعتماد
                 parsed = extract_json_from_text(raw_text)
                 print(f"نجح التوليد عبر الموديل: {model_name}")
                 return parsed
@@ -108,34 +104,74 @@ def call_gemini(prompt):
 
     raise RuntimeError(f"فشلت جميع الموديلات المتاحة. آخر خطأ: {last_error}")
 
+def build_related_tools_html(existing_tools, is_arabic=True):
+    """يبني قسم الربط الداخلي التلقائي لزيادة الزيارات ومشاهدات الإعلانات"""
+    if not existing_tools:
+        return ""
+    sample = random.sample(existing_tools, min(4, len(existing_tools)))
+    heading = "أدوات مجانية أخرى قد تهمك" if is_arabic else "More Free Online Tools"
+    cards = ""
+    for t in sample:
+        cards += f"""
+        <a href="/{t['slug']}/" class="block p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 hover:shadow-sm transition">
+          <div class="text-xs font-semibold text-emerald-700 mb-1">{t.get('category', 'Tool')}</div>
+          <div class="font-bold text-slate-800 text-sm mb-1">{t['title']}</div>
+          <div class="text-xs text-slate-500 line-clamp-2">{t['description']}</div>
+        </a>
+        """
+    return f"""
+    <section class="mt-10 pt-8 border-t border-slate-200">
+      <h2 class="text-lg font-extrabold text-slate-800 mb-4">{heading}</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {cards}
+      </div>
+    </section>
+    """
+
 def main():
     existing_tools = load_tools()
     existing_slugs = [t["slug"] for t in existing_tools]
 
-    idea_instruction = (
-        f"صمم هذه الأداة تحديداً: {CUSTOM_IDEA}"
-        if CUSTOM_IDEA
-        else f"اقترح فكرة أداة ويب مجانية جديدة عليها بحث عالٍ في جوجل (بالعربية أو الإنجليزية) ومنافسة متوسطة أو ضعيفة، وتجنب تكرار هذه الأدوات الموجودة مسبقاً: {existing_slugs}"
-    )
+    # التنويع الذكي بين الأدوات العربية والإنجليزية (لرفع عائد CPM الإعلاني)
+    use_english = (len(existing_tools) % 3 == 2) and not CUSTOM_IDEA
+
+    if CUSTOM_IDEA:
+        idea_instruction = f"صمم هذه الأداة تحديداً بأعلى جودة ممكنة: {CUSTOM_IDEA}"
+    elif use_english:
+        idea_instruction = (
+            f"Suggest a high-search-volume, low-competition English micro-tool (like a specific calculator, text converter, developer utility, or generator) "
+            f"that runs 100% client-side in JavaScript. Avoid duplicating these existing slugs: {existing_slugs}. "
+            f"Write the entire tool page, title, description, SEO guide, and FAQs in clear, natural English with dir='ltr' and lang='en'."
+        )
+    else:
+        idea_instruction = (
+            f"اقترح فكرة أداة ويب مجانية باللغة العربية تستهدف كلمة مفتاحية محددة (Long-tail Keyword) عليها بحث حقيقي في مصر والسعودية والعالم العربي "
+            f"ومنافسة ضعيفة (مثل حاسبات متخصصة، تحويلات، أدوات نصوص، مولدات روابط أو باركود، أو أدوات للمعلمين والطلاب والمسوقين)، "
+            f"وتجنب تكرار هذه الأدوات الموجودة مسبقاً: {existing_slugs}."
+        )
 
     prompt = f"""
-أنت خبير SEO ومطور ويب محترف. {idea_instruction}
+أنت خبير SEO عالمي ومطور ويب محترف. {idea_instruction}
+
 الشروط الإلزامية للأداة:
-1. تعمل بالكامل في المتصفح بـ HTML و Tailwind CSS (عبر CDN) و JavaScript بدون أي API خارجي.
-2. تصميم عصري متجاوب مع الموبايل (استخدم خط Cairo من Google Fonts إذا كانت عربية).
-3. يجب أن تحتوي الصفحة في المكان المناسب أعلى الأداة على:
-   <div id="ad-slot-top" class="w-full min-h-[90px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6">مساحة إعلانية</div>
-4. ويجب أن تحتوي أسفل الأداة على:
-   <div id="ad-slot-bottom" class="w-full min-h-[250px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6">مساحة إعلانية</div>
-5. يجب أن تحتوي قبل إغلاق </body> مباشرة على:
+1. تعمل بالكامل في المتصفح بـ HTML و Tailwind CSS (عبر CDN) و JavaScript بدون أي API خارجي، وتكون دقيقة ومفيدة فعلياً للمستخدم مع زر نسخ النتيجة أو تحميلها.
+2. تصميم عصري متجاوب مع الموبايل (استخدم خط Cairo من Google Fonts للأدوات العربية، و Inter للأدوات الإنجليزية).
+3. تحسين SEO كامل: عنوان `<title>` جذاب غني بالكلمات المفتاحية، ووسم `<meta name="description">`.
+4. يجب أن تحتوي الصفحة أعلى الأداة على حاوية الإعلان العلوي بالضبط:
+   <div id="ad-slot-top" class="w-full min-h-[90px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6">Ad Space</div>
+5. ويجب أن تحتوي أسفل الأداة مباشرة على حاوية الإعلان السفلي بالضبط:
+   <div id="ad-slot-bottom" class="w-full min-h-[250px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6">Ad Space</div>
+6. أضف أسفل الإعلان السفلي مقالاً تعريفياً مفيداً يشرح طريقة استخدام الأداة وفوائدها، وقسم الأسئلة الشائعة (FAQ) مع كود Schema.org JSON-LD في `<head>` لرفع الترتيب في جوجل.
+7. أضف في الهيدر رابطاً واضحاً للعودة للرئيسية (`<a href="/">الرئيسية</a>` أو `<a href="/">Home</a>`).
+8. يجب أن تحتوي قبل إغلاق `</body>` مباشرة على:
    <script src="/ads.js"></script>
-6. تحتوي على رابط للعودة للرئيسية (<a href="/">الرئيسية</a>) ومقال SEO تعريفي بالأداة أسفلها.
 
 أعد كائن JSON فقط بدون أي نص إضافي، يحتوي على المفاتيح التالية:
-- "slug": رابط إنجليزي قصير مفصول بشرطات مثل qr-code-generator
-- "title": عنوان الأداة المختصر للبطاقة
-- "category": تصنيف الأداة مثل أدوات النصوص أو حاسبات
-- "description": وصف جذاب من سطرين للأداة
+- "slug": رابط إنجليزي قصير مفصول بشرطات مثل vat-calculator-saudi
+- "title": عنوان الأداة المختصر للبطاقة (بنفس لغة الأداة)
+- "category": تصنيف الأداة مثل حاسبات أو أدوات النصوص أو Calculators
+- "description": وصف جذاب من سطرين للأداة (بنفس لغة الأداة)
+- "is_arabic": true إذا كانت الأداة بالعربية أو false إذا كانت بالإنجليزية
 - "html_code": كود HTML الكامل للصفحة من <!DOCTYPE html> إلى </html>
 """
 
@@ -146,9 +182,20 @@ def main():
     if not slug or slug in existing_slugs:
         slug = f"tool-{int(datetime.now().timestamp())}"
 
+    html_code = tool_data["html_code"]
+    is_arabic = tool_data.get("is_arabic", not use_english)
+
+    # حقن قسم الربط الداخلي للأدوات الأخرى قبل الفوتر أو قبل ads.js
+    related_html = build_related_tools_html(existing_tools, is_arabic=is_arabic)
+    if related_html:
+        if "</main>" in html_code:
+            html_code = html_code.replace("</main>", f"{related_html}\n</main>", 1)
+        elif '<script src="/ads.js"></script>' in html_code:
+            html_code = html_code.replace('<script src="/ads.js"></script>', f'{related_html}\n<script src="/ads.js"></script>', 1)
+
     os.makedirs(slug, exist_ok=True)
     with open(f"{slug}/index.html", "w", encoding="utf-8") as f:
-        f.write(tool_data["html_code"])
+        f.write(html_code)
 
     new_entry = {
         "slug": slug,
@@ -165,16 +212,4 @@ def main():
     sitemap_lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-        f'  <url><loc>{BASE_URL}/</loc><priority>1.0</priority></url>'
-    ]
-    for t in existing_tools:
-        sitemap_lines.append(f'  <url><loc>{BASE_URL}/{t["slug"]}/</loc><priority>0.8</priority></url>')
-    sitemap_lines.append('</urlset>')
-
-    with open("sitemap.xml", "w", encoding="utf-8") as f:
-        f.write("\n".join(sitemap_lines))
-
-    print(f"تم توليد ونشر الأداة بنجاح: {BASE_URL}/{slug}/")
-
-if __name__ == "__main__":
-    main()
+        f'  <url><loc>{BASE_URL}/</loc><priority>1.0</priority></url
