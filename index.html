@@ -41,10 +41,10 @@
     </div>
     <!-- /AD_SLOT_TOP -->
 
-    <!-- Tools Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+    <!-- Tools Grid (تُحدّث تلقائياً من tools.json) -->
+    <div id="tools-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
       
-      <!-- Tool 1 Card -->
+      <!-- Tool 1 Card (افتراضية لحين تحميل tools.json) -->
       <a href="/arabic-tashkeel-remover/" class="group bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-md hover:border-emerald-400 transition flex flex-col justify-between">
         <div>
           <span class="inline-block text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg mb-3">
@@ -63,8 +63,6 @@
         </div>
       </a>
 
-      <!-- سيتم إضافة بطاقات الأدوات الجديدة هنا تلقائياً -->
-
     </div>
 
     <!-- AD_SLOT_BOTTOM -->
@@ -82,6 +80,34 @@
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // قراءة الأدوات الجديدة تلقائياً من tools.json
+    fetch('/tools.json?v=' + Date.now())
+      .then(res => res.ok ? res.json() : Promise.reject())
+      .then(tools => {
+        if (!Array.isArray(tools) || tools.length === 0) return;
+        const grid = document.getElementById('tools-grid');
+        grid.innerHTML = tools.map(tool => `
+          <a href="/${tool.slug}/" class="group bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-md hover:border-emerald-400 transition flex flex-col justify-between">
+            <div>
+              <span class="inline-block text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg mb-3">
+                ${tool.category || 'أداة مجانية'}
+              </span>
+              <h2 class="text-lg font-bold text-slate-900 group-hover:text-emerald-700 transition mb-2">
+                ${tool.title}
+              </h2>
+              <p class="text-sm text-slate-600 leading-relaxed">
+                ${tool.description}
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 text-sm font-bold text-emerald-600 flex items-center justify-between">
+              <span>فتح الأداة</span>
+              <span>&larr;</span>
+            </div>
+          </a>
+        `).join('');
+      })
+      .catch(() => {});
   </script>
   <script src="/ads.js"></script>
 </body>
