@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاسبة الكلمات ووقت القراءة العربي - عداد الكلمات الدقيق</title>
+    <meta name="description" content="أداة مجانية لحساب عدد الكلمات والحروف والفقرات ووقت القراءة المتوقع للمقالات والنصوص العربية والإنجليزية.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <header class="bg-white border-b border-slate-200 shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="/" class="text-indigo-600 font-bold hover:underline flex items-center gap-1">
+                &larr; الرئيسية
+            </a>
+            <span class="text-sm text-slate-500 font-semibold">أدوات النصوص الذكية</span>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-8 flex-grow w-full">
+        
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-slate-900 mb-2">حاسبة الكلمات ووقت القراءة العربي</h1>
+            <p class="text-slate-600">الصق نصك أدناه لمعرفة عدد الكلمات، الحروف، والوقت المستغرق لقراءته فوراً.</p>
+        </div>
+
+        <div id="ad-slot-top" class="w-full min-h-[90px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6">مساحة إعلانية</div>
+
+        <!-- الأداة -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+                <div class="bg-indigo-50 border border-indigo-100 p-4 rounded-xl text-center">
+                    <span class="block text-xs text-indigo-600 font-semibold mb-1">الكلمات</span>
+                    <span id="word-count" class="text-2xl font-bold text-indigo-900">0</span>
+                </div>
+                <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-xl text-center">
+                    <span class="block text-xs text-emerald-600 font-semibold mb-1">الحروف (بدون مسافات)</span>
+                    <span id="char-count" class="text-2xl font-bold text-emerald-900">0</span>
+                </div>
+                <div class="bg-amber-50 border border-amber-100 p-4 rounded-xl text-center">
+                    <span class="block text-xs text-amber-600 font-semibold mb-1">الفقرات</span>
+                    <span id="paragraph-count" class="text-2xl font-bold text-amber-900">0</span>
+                </div>
+                <div class="bg-sky-50 border border-sky-100 p-4 rounded-xl text-center">
+                    <span class="block text-xs text-sky-600 font-semibold mb-1">وقت القراءة</span>
+                    <span id="reading-time" class="text-2xl font-bold text-sky-900">0 ثانية</span>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <textarea id="text-input" rows="8" class="w-full p-4 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition resize-y text-slate-700 placeholder-slate-400" placeholder="اكتب أو الصق النص هنا..."></textarea>
+            </div>
+
+            <div class="flex justify-between items-center">
+                <button id="clear-btn" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold px-4 py-2 rounded-lg transition">
+                    مسح النص
+                </button>
+                <span id="speaking-time" class="text-xs text-slate-500">وقت التحدث المقدر: 0 ثانية</span>
+            </div>
+        </div>
+
+        <div id="ad-slot-bottom" class="w-full min-h-[250px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6">مساحة إعلانية</div>
+
+        <!-- مقال SEO التعريفي -->
+        <article class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mt-8 prose max-w-none text-slate-700">
+            <h2 class="text-xl font-bold text-slate-900 mb-3">لماذا تحتاج إلى أحساب عدد الكلمات ووقت القراءة؟</h2>
+            <p class="mb-4">
+                سواء كنت كاتباً للمحتوى، مدوناً، أو مسوقاً عبر وسائل التواصل الاجتماعي، فإن معرفة طول النص الخاص بك أمر بالغ الأهمية. تساعدك هذه الأداة المجانية على تحليل النصوص بدقة متناهية ودون الحاجة لتسجيل الدخول أو تثبيت أي إضافات.
+            </p>
+            <h3 class="text-lg font-bold text-slate-900 mb-2">مميزات حاسبة النصوص:</h3>
+            <ul class="list-disc list-inside space-y-1 mb-4">
+                <li>دقة عالية في حساب الكلمات العربية والإنجليزية على حد سواء.</li>
+                <li>حساب وقت القراءة بناءً على المعدل الطبيعي لقراءة الإنسان (حوالي 200-250 كلمة في الدقيقة).</li>
+                <li>حساب وقت التحدث المقدر (مناسب لصانعي محتوى الفيديو والبودكاست).</li>
+                <li>تعمل بالكامل داخل متصفحك مما يضمن خصوصية وسرية تامة لبياناتك.</li>
+            </ul>
+        </article>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-6 text-center text-sm text-slate-500 mt-12">
+        <p>جميع الحقوق محفوظة &copy; 2024</p>
+    </footer>
+
+    <script>
+        const textInput = document.getElementById('text-input');
+        const wordCountEl = document.getElementById('word-count');
+        const charCountEl = document.getElementById('char-count');
+        const paragraphCountEl = document.getElementById('paragraph-count');
+        const readingTimeEl = document.getElementById('reading-time');
+        const speakingTimeEl = document.getElementById('speaking-time');
+        const clearBtn = document.getElementById('clear-btn');
+
+        function analyzeText() {
+            const text = textInput.value;
+            
+            // Word count
+            const words = text.trim() ? text.trim().split(/\s+/) : [];
+            const wordCount = words.length;
+            wordCountEl.textContent = wordCount;
+
+            // Character count without spaces
+            const charCount = text.replace(/\s/g, '').length;
+            charCountEl.textContent = charCount;
+
+            // Paragraph count
+            const paragraphs = text.split(/\n+/).filter(p => p.trim().length > 0);
+            paragraphCountEl.textContent = paragraphs.length;
+
+            // Reading time (approx 225 words per minute)
+            const readingMinutes = wordCount / 225;
+            const readingSeconds = Math.ceil(readingMinutes * 60);
+            if (readingSeconds < 60) {
+                readingTimeEl.textContent = readingSeconds + ' ثانية';
+            } else {
+                const mins = Math.floor(readingSeconds / 60);
+                const secs = readingSeconds % 60;
+                readingTimeEl.textContent = mins + ' دقيقة ' + (secs > 0 ? secs + ' ثانية' : '');
+            }
+
+            // Speaking time (approx 130 words per minute)
+            const speakingMinutes = wordCount / 130;
+            const speakingSeconds = Math.ceil(speakingMinutes * 60);
+            if (speakingSeconds < 60) {
+                speakingTimeEl.textContent = 'وقت التحدث المقدر: ' + speakingSeconds + ' ثانية';
+            } else {
+                const mins = Math.floor(speakingSeconds / 60);
+                speakingTimeEl.textContent = 'وقت التحدث المقدر: ' + mins + ' دقيقة تقريباً';
+            }
+        }
+
+        textInput.addEventListener('input', analyzeText);
+
+        clearBtn.addEventListener('click', () => {
+            textInput.value = '';
+            analyzeText();
+            textInput.focus();
+        });
+    </script>
+    <script src="/ads.js"></script>
+</body>
+</html>

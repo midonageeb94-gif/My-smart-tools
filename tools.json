@@ -1,5 +1,13 @@
 [
   {
+    "slug": "arabic-word-counter-and-reading-time",
+    "title": "حاسبة الكلمات ووقت القراءة العربي",
+    "category": "أدوات النصوص",
+    "description": "أداة دقيقة لحساب عدد الكلمات، الحروف، السطور، وتقدير وقت القراءة للنصوص العربية والانجليزية مباشرة في متصفحك.",
+    "url": "https://mysmarttools.midonageeb94.workers.dev/arabic-word-counter-and-reading-time/",
+    "created_at": "2026-11-20 23:44"
+  },
+  {
     "slug": "pixel-to-rem-converter",
     "title": "متحول وحدات البكسل إلى ريم (PX to REM)",
     "category": "أدوات المطورين",
