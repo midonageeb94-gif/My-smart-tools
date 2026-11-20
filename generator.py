@@ -1,6 +1,7 @@
 import os
 import json
 import re
+import socket
 import urllib.request
 import urllib.error
 from datetime import datetime
@@ -16,36 +17,46 @@ def load_tools():
     return []
 
 def get_candidate_models():
-    """يجلب قائمة الموديلات القياسية المتاحة ويرتبها من الأفضل للأنسب للباقة المجانية"""
+    """يجلب قائمة الموديلات المتاحة ويرتبها مع إعطاء الأولوية لموديلات Gemini السريعة"""
     url = f"https://generativelanguage.googleapis.com/v1beta/models?key={API_KEY}"
     req = urllib.request.Request(url)
     with urllib.request.urlopen(req, timeout=30) as response:
         data = json.loads(response.read().decode("utf-8"))
         models = data.get("models", [])
 
-    # استبعاد الموديلات التجريبية غير المخصصة للنصوص أو ذات الحصة الصفرية
-    excluded_words = ["omni", "audio", "image", "tts", "embedding", "aqa", "vision", "robotics", "computer-use"]
-    valid_models = []
+    excluded_words = ["omni", "audio", "image", "tts", "embedding", "aqa", "vision", "robotics", "computer-use", "deep-research"]
+    gemini_flash = []
+    gemini_others = []
+    gemma_models = []
+
     for m in models:
         name = m["name"]
+        lower = name.lower()
         methods = m.get("supportedGenerationMethods", [])
-        if "generateContent" in methods and not any(w in name.lower() for w in excluded_words):
-            valid_models.append(name)
+        if "generateContent" not in methods or any(w in lower for w in excluded_words):
+            continue
+        if "gemini" in lower and "flash" in lower:
+            gemini_flash.append(name)
+        elif "gemini" in lower:
+            gemini_others.append(name)
+        else:
+            gemma_models.append(name)
 
-    # ترتيب الأولوية للموديلات المستقرة في الباقة المجانية
-    priority_order = [
-        "models/gemini-2.5-flash",
-        "models/gemini-2.0-flash",
-        "models/gemini-2.0-flash-lite",
-        "models/gemini-1.5-flash",
-        "models/gemini-1.5-pro",
-        "models/gemini-pro"
-    ]
-    ordered = [p for p in priority_order if p in valid_models]
-    for m in valid_models:
-        if m not in ordered:
-            ordered.append(m)
+    # ترتيب موديلات flash بحيث تكون الأحدث أولاً
+    gemini_flash.sort(reverse=True)
+    ordered = gemini_flash + gemini_others + gemma_models
+    print("الموديلات المتاحة في حسابك:", ordered)
     return ordered
+
+def extract_json_from_text(text):
+    text = text.strip()
+    # إزالة علامات markdown إن وجدت
+    text = re.sub(r"^```(?:json)?\s*", "", text)
+    text = re.sub(r"\s*```$", "", text)
+    match = re.search(r"\{.*\}", text, re.DOTALL)
+    if match:
+        return json.loads(match.group(0))
+    raise ValueError("لم يتم العثور على JSON صالح في الرد")
 
 def call_gemini(prompt):
     if not API_KEY:
@@ -55,32 +66,44 @@ def call_gemini(prompt):
     if not candidates:
         raise RuntimeError("لم يتم العثور على أي موديل نصي متاح في المفتاح.")
 
-    payload = {
-        "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {
-            "temperature": 0.7,
-            "responseMimeType": "application/json"
-        }
-    }
-
     last_error = ""
     for model_name in candidates:
         print(f"جاري تجربة الموديل: {model_name} ...")
         url = f"https://generativelanguage.googleapis.com/v1beta/{model_name}:generateContent?key={API_KEY}"
+        
+        gen_config = {"temperature": 0.7}
+        if "gemini" in model_name.lower():
+            gen_config["responseMimeType"] = "application/json"
+
+        payload = {
+            "contents": [{"parts": [{"text": prompt}]}],
+            "generationConfig": gen_config
+        }
         req = urllib.request.Request(
             url,
             data=json.dumps(payload).encode("utf-8"),
             headers={"Content-Type": "application/json"}
         )
         try:
-            with urllib.request.urlopen(req, timeout=90) as response:
+            with urllib.request.urlopen(req, timeout=65) as response:
                 data = json.loads(response.read().decode("utf-8"))
-                print(f"نجح الاتصال بالموديل: {model_name}")
-                return data["candidates"][0]["content"]["parts"][0]["text"]
+                raw_text = data["candidates"][0]["content"]["parts"][0]["text"]
+                # التحقق من أن الرد JSON سليم قبل الاعتماد
+                parsed = extract_json_from_text(raw_text)
+                print(f"نجح التوليد عبر الموديل: {model_name}")
+                return parsed
         except urllib.error.HTTPError as e:
             err_body = e.read().decode("utf-8", errors="ignore")
-            last_error = f"{model_name} -> كود {e.code}: {err_body[:200]}"
+            last_error = f"{model_name} -> كود {e.code}: {err_body[:150]}"
             print(f"تم تخطي {model_name} (كود {e.code})، جاري تجربة الموديل التالي...")
+            continue
+        except (TimeoutError, socket.timeout, urllib.error.URLError) as e:
+            last_error = f"{model_name} -> انتهت مهلة الاتصال: {e}"
+            print(f"تأخر {model_name} في الرد، جاري الانتقال للموديل التالي...")
+            continue
+        except Exception as e:
+            last_error = f"{model_name} -> خطأ تحليل الرد: {e}"
+            print(f"رد غير صالح من {model_name}، جاري تجربة التالي...")
             continue
 
     raise RuntimeError(f"فشلت جميع الموديلات المتاحة. آخر خطأ: {last_error}")
@@ -108,7 +131,7 @@ def main():
    <script src="/ads.js"></script>
 6. تحتوي على رابط للعودة للرئيسية (<a href="/">الرئيسية</a>) ومقال SEO تعريفي بالأداة أسفلها.
 
-أعد كائن JSON يحتوي على المفاتيح التالية فقط:
+أعد كائن JSON فقط بدون أي نص إضافي، يحتوي على المفاتيح التالية:
 - "slug": رابط إنجليزي قصير مفصول بشرطات مثل qr-code-generator
 - "title": عنوان الأداة المختصر للبطاقة
 - "category": تصنيف الأداة مثل أدوات النصوص أو حاسبات
@@ -117,8 +140,7 @@ def main():
 """
 
     print("جاري التواصل مع Gemini لتوليد الأداة...")
-    raw_response = call_gemini(prompt)
-    tool_data = json.loads(raw_response)
+    tool_data = call_gemini(prompt)
 
     slug = re.sub(r"[^a-z0-9-]", "", tool_data["slug"].lower().strip())
     if not slug or slug in existing_slugs:
