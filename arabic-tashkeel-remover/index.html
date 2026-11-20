@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>أداة إزالة التشكيل وتنظيف النصوص العربية أونلاين مجاناً | Arabic Tashkeel Remover</title>
+  <meta name="description" content="أداة مجانية سريعة لإزالة التشكيل والحركات من النصوص العربية، حذف الكشيدة، توحيد الهمزات، وتنظيف المسافات الزائدة بضغطة زر واحدة بدون برامج." />
+  <meta name="keywords" content="إزالة التشكيل, حذف الحركات, تنظيف النص العربي, إزالة الكشيدة, توحيد الهمزات, Arabic Tashkeel Remover, Remove Diacritics" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph / Social Media SEO -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="أداة إزالة التشكيل وتنظيف النصوص العربية مجاناً" />
+  <meta property="og:description" content="احذف التشكيل والحركات والمسافات الزائدة من أي نص عربي فوراً وبضغطة زر واحدة." />
+  <meta property="og:locale" content="ar_AR" />
+  <meta property="og:locale:alternate" content="en_US" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Cairo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+  <!-- Header & Navigation -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-10">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="/" class="inline-flex items-center gap-2 text-emerald-700 hover:text-emerald-800 font-bold text-sm sm:text-base transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+        </svg>
+        <span>العودة للرئيسية</span>
+      </a>
+      <span class="text-xs font-semibold bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full border border-emerald-200">
+        أداة مجانية 100%
+      </span>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-6 sm:py-10">
+
+    <!-- Hero Title -->
+    <div class="text-center mb-6">
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">
+        أداة إزالة التشكيل وتنظيف النصوص العربية
+      </h1>
+      <p class="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto">
+        ألصق النص المشكّل بالأسفل واختر خيارات التنظيف المناسبة لإزالة الحركات، التطويل، وتنسيق المسافات فوراً داخل متصفحك.
+      </p>
+    </div>
+
+    <!-- AD_SLOT_TOP -->
+    <div id="ad-slot-top" class="w-full min-h-[90px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 mb-6">
+      <!-- ضع كود الإعلان العلوي هنا (728x90 أو إعلان متجاوب) -->
+      مساحة إعلانية
+    </div>
+    <!-- /AD_SLOT_TOP -->
+
+    <!-- Tool Workspace Card -->
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6 mb-6">
+      
+      <!-- Options Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+        <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+          <input type="checkbox" id="opt-tashkeel" checked class="w-4 h-4 accent-emerald-600 rounded" />
+          <span class="text-sm font-semibold text-slate-700">إزالة التشكيل والحركات</span>
+        </label>
+
+        <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+          <input type="checkbox" id="opt-tatweel" checked class="w-4 h-4 accent-emerald-600 rounded" />
+          <span class="text-sm font-semibold text-slate-700">حذف التطويل (الكشيدة ـ)</span>
+        </label>
+
+        <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+          <input type="checkbox" id="opt-spaces" checked class="w-4 h-4 accent-emerald-600 rounded" />
+          <span class="text-sm font-semibold text-slate-700">تنظيف المسافات الزائدة</span>
+        </label>
+
+        <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+          <input type="checkbox" id="opt-hamza" class="w-4 h-4 accent-emerald-600 rounded" />
+          <span class="text-sm font-semibold text-slate-700">توحيد الهمزات (أ إ آ ← ا)</span>
+        </label>
+      </div>
+
+      <!-- Input Textarea -->
+      <div class="mb-4">
+        <div class="flex items-center justify-between mb-2">
+          <label for="input-text" class="text-sm font-bold text-slate-700">النص الأصلي:</label>
+          <div class="text-xs text-slate-500 flex gap-3">
+            <span>الكلمات: <strong id="word-count" class="text-slate-800">0</strong></span>
+            <span>الحروف: <strong id="char-count" class="text-slate-800">0</strong></span>
+          </div>
+        </div>
+        <textarea
+          id="input-text"
+          rows="7"
+          placeholder="اكتب أو ألصق النص العربي هنا... مثال: بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ"
+          class="w-full p-4 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-base leading-relaxed resize-y transition"
+        ></textarea>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap items-center gap-3">
+        <button
+          id="btn-process"
+          type="button"
+          class="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-bold py-3 px-6 rounded-xl shadow-sm transition cursor-pointer"
+        >
+          تنظيف النص الآن
+        </button>
+
+        <button
+          id="btn-copy"
+          type="button"
+          class="flex-1 sm:flex-none bg-slate-800 hover:bg-slate-900 active:scale-[0.99] text-white font-bold py-3 px-6 rounded-xl shadow-sm transition cursor-pointer"
+        >
+          نسخ النتيجة
+        </button>
+
+        <button
+          id="btn-clear"
+          type="button"
+          class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-3 px-4 rounded-xl transition cursor-pointer"
+        >
+          مسح الكل
+        </button>
+      </div>
+
+      <!-- Toast Notification -->
+      <div id="toast" class="hidden mt-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-semibold text-center">
+        تم نسخ النص النظيف إلى الحافظة بنجاح!
+      </div>
+    </section>
+
+    <!-- AD_SLOT_BOTTOM -->
+    <div id="ad-slot-bottom" class="w-full min-h-[250px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 mb-8">
+      <!-- ضع كود الإعلان السفلي هنا (300x250 أو إعلان متجاوب) -->
+      مساحة إعلانية
+    </div>
+    <!-- /AD_SLOT_BOTTOM -->
+
+    <!-- SEO Informative Article Section -->
+    <article class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 space-y-5 text-slate-700 leading-relaxed">
+      <h2 class="text-xl font-bold text-slate-900">ما هي أداة إزالة التشكيل وتنظيف النصوص العربية؟</h2>
+      <p>
+        تُعد أداة <strong>إزالة التشكيل وتنظيف النصوص العربية</strong> وسيلة سريعة ومجانية تتيح للكتّاب، الطلاب، الباحثين، وصنّاع المحتوى تجريد النصوص العربية من الحركات الإعرابية (مثل الفتحة، الضمة، الكسرة، السكون، الشدة، والتنوين) بضغطة زر واحدة، دون التأثير على الحروف الأساسية أو معنى الكلمات.
+      </p>
+
+      <h3 class="text-lg font-bold text-slate-900">طريقة استخدام الأداة في 3 خطوات</h3>
+      <ol class="list-decimal list-inside space-y-2 text-slate-700">
+        <li><strong>ألصق النص:</strong> قم بنسخ النص المشكّل أو غير المنسق ولصقه في مربع النص بالأعلى.</li>
+        <li><strong>حدد خيارات التنظيف:</strong> اختر ما إذا كنت تريد حذف التشكيل فقط، أو إزالة التطويل (الكشيدة)، أو توحيد الهمزات وتنظيم المسافات.</li>
+        <li><strong>نظّف وانسخ:</strong> اضغط على زر <strong>"تنظيف النص الآن"</strong> ثم اضغط <strong>"نسخ النتيجة"</strong> لاستخدام النص فوراً في مستنداتك أو موقعك.</li>
+      </ol>
+
+      <h3 class="text-lg font-bold text-slate-900">أهم مميزات وفوائد هذه الأداة</h3>
+      <ul class="list-disc list-inside space-y-2 text-slate-700">
+        <li><strong>خصوصية تامة 100%:</strong> تتم معالجة النصوص بالكامل داخل متصفحك عبر JavaScript، ولا يتم إرسال أو تخزين أي نص على خوادم خارجية.</li>
+        <li><strong>توافق مع محركات البحث (SEO):</strong> تساعد إزالة التشكيل وتوحيد الهمزات في تحسين قابلية قراءة النصوص وأرشفتها في قواعد البيانات ومحركات البحث.</li>
+        <li><strong>سرعة فائقة على الموبايل والكمبيوتر:</strong> تعمل الأداة فوراً حتى مع النصوص والمقالات الطويلة دون الحاجة لتحميل أي برامج.</li>
+      </ul>
+    </article>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-5 text-center text-xs text-slate-500">
+    <div class="max-w-4xl mx-auto px-4">
+      <p>جميع الحقوق محفوظة &copy; <span id="year"></span> | <a href="/" class="text-emerald-700 hover:underline font-semibold">الرئيسية</a></p>
+    </div>
+  </footer>
+
+  <!-- Client-Side JavaScript Logic -->
+  <script>
+    const inputText = document.getElementById('input-text');
+    const optTashkeel = document.getElementById('opt-tashkeel');
+    const optTatweel = document.getElementById('opt-tatweel');
+    const optSpaces = document.getElementById('opt-spaces');
+    const optHamza = document.getElementById('opt-hamza');
+
+    const btnProcess = document.getElementById('btn-process');
+    const btnCopy = document.getElementById('btn-copy');
+    const btnClear = document.getElementById('btn-clear');
+
+    const wordCountEl = document.getElementById('word-count');
+    const charCountEl = document.getElementById('char-count');
+    const toastEl = document.getElementById('toast');
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    function updateStats() {
+      const text = inputText.value;
+      charCountEl.textContent = text.length;
+      const words = text.trim().split(/\s+/).filter(Boolean);
+      wordCountEl.textContent = words.length;
+    }
+
+    function cleanArabicText() {
+      let text = inputText.value;
+      if (!text) return;
+
+      // 1. إزالة التشكيل والحركات العربية (Unicode range 064B - 065F & 0670)
+      if (optTashkeel.checked) {
+        text = text.replace(/[\u064B-\u065F\u0670]/g, '');
+      }
+
+      // 2. إزالة التطويل / الكشيدة (Unicode 0640)
+      if (optTatweel.checked) {
+        text = text.replace(/\u0640/g, '');
+      }
+
+      // 3. توحيد الهمزات
+      if (optHamza.checked) {
+        text = text.replace(/[أإآ]/g, 'ا');
+      }
+
+      // 4. تنظيف المسافات المتكررة والأسطر الزائدة
+      if (optSpaces.checked) {
+        text = text
+          .replace(/[ \t]+/g, ' ')
+          .replace(/\n\s*\n\s*\n+/g, '\n\n')
+          .split('\n')
+          .map(line => line.trim())
+          .join('\n')
+          .trim();
+      }
+
+      inputText.value = text;
+      updateStats();
+    }
+
+    btnProcess.addEventListener('click', cleanArabicText);
+
+    btnCopy.addEventListener('click', async () => {
+      if (!inputText.value) return;
+      try {
+        await navigator.clipboard.writeText(inputText.value);
+      } catch (err) {
+        inputText.select();
+        document.execCommand('copy');
+      }
+      toastEl.classList.remove('hidden');
+      setTimeout(() => toastEl.classList.add('hidden'), 2500);
+    });
+
+    btnClear.addEventListener('click', () => {
+      inputText.value = '';
+      updateStats();
+      toastEl.classList.add('hidden');
+    });
+
+    inputText.addEventListener('input', updateStats);
+  </script>
+</body>
+</html>
