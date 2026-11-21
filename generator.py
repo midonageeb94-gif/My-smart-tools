@@ -133,4 +133,116 @@ def main():
     use_english = (len(existing_tools) % 3 == 2) and not CUSTOM_IDEA
 
     if CUSTOM_IDEA:
-        idea_instruction = f"صمم هذه الأداة تحديداً بأعلى جودة ممكنة: {CUSTOM
+        idea_instruction = f"صمم هذه الأداة تحديداً بأعلى جودة ممكنة: {CUSTOM_IDEA}"
+    elif use_english:
+        idea_instruction = (
+            f"Suggest a high-search-volume, low-competition English micro-tool (like a specific calculator, text converter, developer utility, or generator) "
+            f"that runs 100% client-side in JavaScript. Avoid duplicating these existing slugs: {existing_slugs}. "
+            f"Write the entire tool page, title, description, SEO guide, and FAQs in clear, natural English with dir='ltr' and lang='en'."
+        )
+    else:
+        idea_instruction = (
+            f"اقترح فكرة أداة ويب مجانية باللغة العربية تستهدف كلمة مفتاحية محددة (Long-tail Keyword) عليها بحث حقيقي في مصر والسعودية والعالم العربي "
+            f"ومنافسة ضعيفة (مثل حاسبات متخصصة، تحويلات، أدوات نصوص، مولدات روابط أو باركود، أو أدوات للمعلمين والطلاب والمسوقين)، "
+            f"وتجنب تكرار هذه الأدوات الموجودة مسبقاً: {existing_slugs}."
+        )
+
+    prompt = (
+        f"أنت خبير SEO عالمي ومطور ويب محترف. {idea_instruction}\n\n"
+        "الشروط الإلزامية للأداة:\n"
+        "1. تعمل بالكامل في المتصفح بـ HTML و Tailwind CSS (عبر CDN) و JavaScript بدون أي API خارجي، وتكون دقيقة ومفيدة فعلياً للمستخدم مع زر نسخ النتيجة أو تحميلها.\n"
+        "2. تصميم عصري متجاوب مع الموبايل (استخدم خط Cairo من Google Fonts للأدوات العربية، و Inter للأدوات الإنجليزية).\n"
+        "3. تحسين SEO كامل: عنوان <title> جذاب غني بالكلمات المفتاحية، ووسم <meta name='description'>.\n"
+        "4. يجب أن تحتوي الصفحة أعلى الأداة على حاوية الإعلان العلوي بالضبط:\n"
+        "   <div id=\"ad-slot-top\" class=\"w-full min-h-[90px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6\">Ad Space</div>\n"
+        "5. ويجب أن تحتوي أسفل الأداة مباشرة على حاوية الإعلان السفلي بالضبط:\n"
+        "   <div id=\"ad-slot-bottom\" class=\"w-full min-h-[250px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6\">Ad Space</div>\n"
+        "6. أضف أسفل الإعلان السفلي مقالاً تعريفياً مفيداً يشرح طريقة استخدام الأداة وفوائدها، وقسم الأسئلة الشائعة (FAQ) مع كود Schema.org JSON-LD في <head> لرفع الترتيب في جوجل.\n"
+        "7. أضف في الهيدر رابطاً واضحاً للعودة للرئيسية (<a href='/'>الرئيسية</a> أو <a href='/'>Home</a>).\n"
+        "8. يجب أن تحتوي قبل إغلاق </body> مباشرة على:\n"
+        "   <script src=\"/ads.js\"></script>\n\n"
+        "أعد كائن JSON فقط بدون أي نص إضافي، يحتوي على المفاتيح التالية:\n"
+        "- \"slug\": رابط إنجليزي قصير مفصول بشرطات مثل vat-calculator-saudi\n"
+        "- \"title\": عنوان الأداة المختصر للبطاقة (بنفس لغة الأداة)\n"
+        "- \"category\": تصنيف الأداة مثل حاسبات أو أدوات النصوص أو Calculators\n"
+        "- \"description\": وصف جذاب من سطرين للأداة (بنفس لغة الأداة)\n"
+        "- \"is_arabic\": true إذا كانت الأداة بالعربية أو false إذا كانت بالإنجليزية\n"
+        "- \"html_code\": كود HTML الكامل للصفحة من <!DOCTYPE html> إلى </html>\n"
+    )
+
+    print("جاري التواصل مع Gemini لتوليد الأداة...")
+    tool_data = call_gemini(prompt)
+
+    slug = re.sub(r"[^a-z0-9-]", "", tool_data["slug"].lower().strip())
+    if not slug or slug in existing_slugs:
+        slug = f"tool-{int(datetime.now().timestamp())}"
+
+    html_code = tool_data["html_code"]
+    is_arabic = tool_data.get("is_arabic", not use_english)
+
+    related_html = build_related_tools_html(existing_tools, is_arabic=is_arabic)
+    if related_html:
+        if "</main>" in html_code:
+            html_code = html_code.replace("</main>", f"{related_html}\n</main>", 1)
+        elif '<script src="/ads.js"></script>' in html_code:
+            html_code = html_code.replace('<script src="/ads.js"></script>', f'{related_html}\n<script src="/ads.js"></script>', 1)
+
+    os.makedirs(slug, exist_ok=True)
+    with open(f"{slug}/index.html", "w", encoding="utf-8") as f:
+        f.write(html_code)
+
+    now_utc = datetime.now(timezone.utc)
+    new_entry = {
+        "slug": slug,
+        "title": tool_data["title"],
+        "category": tool_data["category"],
+        "description": tool_data["description"],
+        "url": f"{BASE_URL}/{slug}/",
+        "created_at": now_utc.strftime("%Y-%m-%d %H:%M"),
+        "pub_date_rfc822": now_utc.strftime("%a, %d %b %Y %H:%M:%S +0000")
+    }
+    existing_tools.insert(0, new_entry)
+    with open("tools.json", "w", encoding="utf-8") as f:
+        json.dump(existing_tools, f, ensure_ascii=False, indent=2)
+
+    sitemap_lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+        f'  <url><loc>{BASE_URL}/</loc><priority>1.0</priority></url>'
+    ]
+    for t in existing_tools:
+        sitemap_lines.append(f'  <url><loc>{BASE_URL}/{t["slug"]}/</loc><priority>0.8</priority></url>')
+    sitemap_lines.append('</urlset>')
+
+    with open("sitemap.xml", "w", encoding="utf-8") as f:
+        f.write("\n".join(sitemap_lines))
+
+    rss_items = []
+    for t in existing_tools[:20]:
+        pub_date = t.get("pub_date_rfc822") or now_utc.strftime("%a, %d %b %Y %H:%M:%S +0000")
+        rss_items.append(f"""    <item>
+      <title><![CDATA[{t['title']}]]></title>
+      <link>{BASE_URL}/{t['slug']}/</link>
+      <guid>{BASE_URL}/{t['slug']}/</guid>
+      <description><![CDATA[{t['description']}]]></description>
+      <enclosure url="{BASE_URL}/icon.png" type="image/png" />
+      <pubDate>{pub_date}</pubDate>
+    </item>""")
+
+    rss_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>أدواتي الذكية - أدوات ويب مجانية</title>
+    <link>{BASE_URL}/</link>
+    <description>أحدث أدوات الويب المجانية والسريعة أونلاين</description>
+{chr(10).join(rss_items)}
+  </channel>
+</rss>"""
+
+    with open("rss.xml", "w", encoding="utf-8") as f:
+        f.write(rss_xml)
+
+    print(f"تم توليد ونشر الأداة وتحديث الخرائط بنجاح: {BASE_URL}/{slug}/")
+
+if __name__ == "__main__":
+    main()
