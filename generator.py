@@ -5,7 +5,7 @@ import socket
 import random
 import urllib.request
 import urllib.error
-from datetime import datetime
+from datetime import datetime, timezone
 
 API_KEY = os.environ.get("GEMINI_API_KEY", "").strip()
 CUSTOM_IDEA = os.environ.get("CUSTOM_IDEA", "").strip()
@@ -153,63 +153,4 @@ def main():
     prompt = f"""
 أنت خبير SEO عالمي ومطور ويب محترف. {idea_instruction}
 
-الشروط الإلزامية للأداة:
-1. تعمل بالكامل في المتصفح بـ HTML و Tailwind CSS (عبر CDN) و JavaScript بدون أي API خارجي، وتكون دقيقة ومفيدة فعلياً للمستخدم مع زر نسخ النتيجة أو تحميلها.
-2. تصميم عصري متجاوب مع الموبايل (استخدم خط Cairo من Google Fonts للأدوات العربية، و Inter للأدوات الإنجليزية).
-3. تحسين SEO كامل: عنوان `<title>` جذاب غني بالكلمات المفتاحية، ووسم `<meta name="description">`.
-4. يجب أن تحتوي الصفحة أعلى الأداة على حاوية الإعلان العلوي بالضبط:
-   <div id="ad-slot-top" class="w-full min-h-[90px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6">Ad Space</div>
-5. ويجب أن تحتوي أسفل الأداة مباشرة على حاوية الإعلان السفلي بالضبط:
-   <div id="ad-slot-bottom" class="w-full min-h-[250px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6">Ad Space</div>
-6. أضف أسفل الإعلان السفلي مقالاً تعريفياً مفيداً يشرح طريقة استخدام الأداة وفوائدها، وقسم الأسئلة الشائعة (FAQ) مع كود Schema.org JSON-LD في `<head>` لرفع الترتيب في جوجل.
-7. أضف في الهيدر رابطاً واضحاً للعودة للرئيسية (`<a href="/">الرئيسية</a>` أو `<a href="/">Home</a>`).
-8. يجب أن تحتوي قبل إغلاق `</body>` مباشرة على:
-   <script src="/ads.js"></script>
-
-أعد كائن JSON فقط بدون أي نص إضافي، يحتوي على المفاتيح التالية:
-- "slug": رابط إنجليزي قصير مفصول بشرطات مثل vat-calculator-saudi
-- "title": عنوان الأداة المختصر للبطاقة (بنفس لغة الأداة)
-- "category": تصنيف الأداة مثل حاسبات أو أدوات النصوص أو Calculators
-- "description": وصف جذاب من سطرين للأداة (بنفس لغة الأداة)
-- "is_arabic": true إذا كانت الأداة بالعربية أو false إذا كانت بالإنجليزية
-- "html_code": كود HTML الكامل للصفحة من <!DOCTYPE html> إلى </html>
-"""
-
-    print("جاري التواصل مع Gemini لتوليد الأداة...")
-    tool_data = call_gemini(prompt)
-
-    slug = re.sub(r"[^a-z0-9-]", "", tool_data["slug"].lower().strip())
-    if not slug or slug in existing_slugs:
-        slug = f"tool-{int(datetime.now().timestamp())}"
-
-    html_code = tool_data["html_code"]
-    is_arabic = tool_data.get("is_arabic", not use_english)
-
-    # حقن قسم الربط الداخلي للأدوات الأخرى قبل الفوتر أو قبل ads.js
-    related_html = build_related_tools_html(existing_tools, is_arabic=is_arabic)
-    if related_html:
-        if "</main>" in html_code:
-            html_code = html_code.replace("</main>", f"{related_html}\n</main>", 1)
-        elif '<script src="/ads.js"></script>' in html_code:
-            html_code = html_code.replace('<script src="/ads.js"></script>', f'{related_html}\n<script src="/ads.js"></script>', 1)
-
-    os.makedirs(slug, exist_ok=True)
-    with open(f"{slug}/index.html", "w", encoding="utf-8") as f:
-        f.write(html_code)
-
-    new_entry = {
-        "slug": slug,
-        "title": tool_data["title"],
-        "category": tool_data["category"],
-        "description": tool_data["description"],
-        "url": f"{BASE_URL}/{slug}/",
-        "created_at": datetime.now().strftime("%Y-%m-%d %H:%M")
-    }
-    existing_tools.insert(0, new_entry)
-    with open("tools.json", "w", encoding="utf-8") as f:
-        json.dump(existing_tools, f, ensure_ascii=False, indent=2)
-
-    sitemap_lines = [
-        '<?xml version="1.0" encoding="UTF-8"?>',
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-        f'  <url><loc>{BASE_URL}/</loc><priority>1.0</priority></url
+الشروط الإلزام
