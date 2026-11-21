@@ -1,5 +1,14 @@
 [
   {
+    "slug": "calculate-service-charge-restaurant",
+    "title": "حساب خدمة المطاعم والنسبة المئوية | أداة حساب الخدمة والضريبة أونلاين",
+    "category": "Tools",
+    "description": "أداة مجانية لحساب قيمة خدمة المطاعم (Service Charge) والضريبة المضافة على الفواتير بسهولة في مصر والسعودية، لمعرفة المبلغ الإجمالي بدقة قبل الدفع.",
+    "url": "https://mysmarttools.midonageeb94.workers.dev/calculate-service-charge-restaurant/",
+    "created_at": "2026-11-21 22:38",
+    "pub_date_rfc822": "Sat, 21 Nov 2026 22:38:45 +0000"
+  },
+  {
     "slug": "arabic-word-counter-and-reading-time",
     "title": "حاسبة الكلمات ووقت القراءة العربي",
     "category": "أدوات النصوص",

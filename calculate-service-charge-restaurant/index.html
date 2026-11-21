@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حساب خدمة المطاعم والنسبة المئوية أونلاين - مصر والسعودية</title>
+    <meta name="description" content="احسب قيمة خدمة المطاعم وضريبة القيمة المضافة على الفواتير بسهولة ودقة. أداة مجانية سريعة متوافقة مع القوانين في مصر والسعودية.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+    </style>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "كيف يتم حساب خدمة المطاعم في مصر والسعودية؟",
+          "The Answer": {
+            "@type": "Answer",
+            "text": "يتم حساب خدمة المطاعم عبر ضرب قيمة الفاتورة الأصلية في نسبة الخدمة المحددة (غالباً تتراوح بين 10% إلى 12%)، ثم إضافة ضريبة القيمة المضافة إن وجدت."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "هل خدمة المطاعم إجبارية؟",
+          "@type": "Answer",
+          "text": "نعم، في الأماكن السياحية والمرخصة تقدم المطاعم فاتورة تشمل خدمة المطاعم والضريبة المضافة وفقاً للوائح الجهات الحكومية المختصة."
+        }
+      ]
+    }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <header class="bg-white border-b border-slate-200 py-4 px-6">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <a href="/" class="text-blue-600 font-bold hover:underline">Home</a>
+            <h1 class="text-lg font-bold text-slate-700">حساب خدمة المطاعم</h1>
+        </div>
+    </header> 
+
+    <main class="max-w-3xl mx-auto px-4 py-8 flex-grow w-full">
+        <!-- Top Ad Slot -->
+        <div id="ad-slot-top" class="w-full min-h-[90px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6">Ad Space</div>
+
+        <div class="bg-white shadow-xl rounded-2xl p-6 md:p-8 border border-slate-100">
+            <h2 class="text-2xl font-bold text-slate-900 mb-2 text-center">حساب خدمة المطاعم والضريبة</h2>
+            <p class="text-sm text-slate-500 mb-6 text-center">أدخل قيمة الفاتورة وحدد نسب الخدمة والضريبة لمعرفة المجموع النهائي فوراً.</p>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">قيمة الفاتورة الأساسية</label>
+                    <input type="number" id="billAmount" placeholder="مثال: 500" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">نسبة الخدمة (%)</label>
+                        <input type="number" id="serviceRate" value="12" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">نسبة الضريبة (%)</label>
+                        <input type="number" id="taxRate" value="14" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button onclick="calculateTotal()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl transition duration-200">احسب المجموع</button>
+                    <button onclick="resetForm()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold py-3 px-6 rounded-xl transition duration-200">إعادة ضبط</button>
+                </div>
+            </div>
+
+            <div id="resultArea" class="mt-8 p-6 bg-slate-50 rounded-xl border border-slate-200 hidden">
+                <h3 class="font-bold text-slate-800 mb-4 border-b pb-2">تفاصيل الفاتورة:</h3>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between"><span>قيمة الأكل/الطلبات:</span> <span id="resBase" class="font-semibold">0</span></div>
+                    <div class="flex justify-between"><span>قيمة خدمة المطعم:</span> <span id="resService" class="font-semibold">0</span></div>
+                    <div class="flex justify-between"><span>قيمة الضريبة المضافة:</span> <span id="resTax" class="font-semibold">0</span></div>
+                    <div class="flex justify-between text-base font-bold text-blue-600 pt-2 border-t"><span>المجموع الإجمالي:</span> <span id="resTotal">0</span></div>
+                </div>
+                <button onclick="copyResult()" class="mt-4 w-full bg-slate-800 text-white py-2 rounded-lg text-sm hover:bg-slate-700">نسخ التفاصيل</button>
+            </div>
+        </div>
+
+        <!-- SEO Guide Section -->
+        <section class="mt-12 bg-white rounded-2xl p-6 md:p-8 border border-slate-100">
+            <h3 class="text-xl font-bold text-slate-900 mb-4">دليل استخدام أداة حساب خدمة المطاعم</h3>
+            <p class="text-slate-600 leading-relaxed mb-4">
+                عند ارتياد المطاعم في مصر أو السعودية، قد تتفاجأ أحياناً بإضافة رسوم خدمة (Service Charge) وضريبة القيمة المضافة (VAT) على الفاتورة النهائية. تساعدك هذه الأداة المجانية على معرفة التكلفة الإجمالية بدقة قبل دفع الفاتورة.
+            </p>
+            <h4 class="font-bold text-slate-800 mb-2">الأسئلة الشائعة:</h4>
+            <div class="space-y-3 text-sm text-slate-600">
+                <p><strong>كيف يتم حساب خدمة المطاعم؟</strong> تُحتسب الخدمة غالباً كنسبة مئوية من قيمة الطلبات الأساسية قبل احتساب الضريبة، أو بعدها حسب سياسة المطعم.</p>
+                <p><strong>هل تختلف النسبة بين مصر والسعودية؟</strong> نعم، تختلف نسب الخدمة والضرائب حسب ترخيص المنشأة (سياحي، تجاري) وقوانين ضريبة القيمة المضافة في كل دولة.</p>
+            </div>
+        </section>
+
+        <!-- Bottom Ad Slot -->
+        <div id="ad-slot-bottom" class="w-full min-h-[250px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6">Ad Space</div>
+    <section class="mt-10 pt-8 border-t border-slate-200"><h2 class="text-lg font-extrabold text-slate-800 mb-4">أدوات مجانية أخرى قد تهمك</h2><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><a href="/arabic-tashkeel-remover/" class="block p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 transition"><div class="text-xs font-semibold text-emerald-700 mb-1">أدوات النصوص</div><div class="font-bold text-slate-800 text-sm mb-1">إزالة التشكيل وتنظيف النصوص العربية</div><div class="text-xs text-slate-500">احذف الحركات الإعرابية، الكشيدة، والمسافات الزائدة، ووحّد الهمزات بضغطة زر واحدة.</div></a><a href="/arabic-word-counter-and-reading-time/" class="block p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 transition"><div class="text-xs font-semibold text-emerald-700 mb-1">أدوات النصوص</div><div class="font-bold text-slate-800 text-sm mb-1">حاسبة الكلمات ووقت القراءة العربي</div><div class="text-xs text-slate-500">أداة دقيقة لحساب عدد الكلمات، الحروف، السطور، وتقدير وقت القراءة للنصوص العربية والانجليزية مباشرة في متصفحك.</div></a><a href="/pixel-to-rem-converter/" class="block p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 transition"><div class="text-xs font-semibold text-emerald-700 mb-1">أدوات المطورين</div><div class="font-bold text-slate-800 text-sm mb-1">متحول وحدات البكسل إلى ريم (PX to REM)</div><div class="text-xs text-slate-500">أداة سريعة ومجانية لمطوري الويب لتحويل قيم البكسل (PX) إلى وحدات REM النسبية والعكس بدقة وسهولة لتصميم متجاوب.</div></a></div></section>
+</main>
+
+    <footer class="bg-white border-t border-slate-200 py-6 text-center text-sm text-slate-500">
+        <p>جميع الحقوق محفوظة © 2024</p>
+    </footer>
+
+    <script>
+        function calculateTotal() {
+            const base = parseFloat(document.getElementById('billAmount').value) || 0;
+            const sRate = parseFloat(document.getElementById('serviceRate').value) || 0;
+            const tRate = parseFloat(document.getElementById('taxRate').value) || 0;
+
+            const serviceAmount = base * (sRate / 100);
+            const subTotal = base + serviceAmount;
+            const taxAmount = subTotal * (tRate / 100);
+            const total = subTotal + taxAmount;
+
+            document.getElementById('resBase').innerText = base.toFixed(2);
+            document.getElementById('resService').innerText = serviceAmount.toFixed(2);
+            document.getElementById('resTax').innerText = taxAmount.toFixed(2);
+            document.getElementById('resTotal').innerText = total.toFixed(2);
+
+            document.getElementById('resultArea').classList.remove('hidden');
+        }
+
+        function resetForm() {
+            document.getElementById('billAmount').value = '';
+            document.getElementById('serviceRate').value = '12';
+            document.getElementById('taxRate').value = '14';
+            document.getElementById('resultArea').classList.add('hidden');
+        }
+
+        function copyResult() {
+            const text = `قيمة الطلبات: ${document.getElementById('resBase').innerText}\nخدمة المطعم: ${document.getElementById('resService').innerText}\nالضريبة: ${document.getElementById('resTax').innerText}\nالإجمالي: ${document.getElementById('resTotal').innerText}`;
+            navigator.clipboard.writeText(text);
+            alert('تم نسخ التفاصيل بنجاح!');
+        }
+    </script>
+    <script src="/ads.js"></script>
+</body>
+</html>
