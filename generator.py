@@ -18,7 +18,6 @@ def load_tools():
     return []
 
 def get_candidate_models():
-    """يجلب قائمة الموديلات المتاحة ويرتبها مع إعطاء الأولوية لموديلات Gemini السريعة"""
     url = f"https://generativelanguage.googleapis.com/v1beta/models?key={API_KEY}"
     req = urllib.request.Request(url)
     with urllib.request.urlopen(req, timeout=30) as response:
@@ -105,7 +104,6 @@ def call_gemini(prompt):
     raise RuntimeError(f"فشلت جميع الموديلات المتاحة. آخر خطأ: {last_error}")
 
 def build_related_tools_html(existing_tools, is_arabic=True):
-    """يبني قسم الربط الداخلي التلقائي لزيادة الزيارات ومشاهدات الإعلانات"""
     if not existing_tools:
         return ""
     sample = random.sample(existing_tools, min(4, len(existing_tools)))
@@ -132,25 +130,7 @@ def main():
     existing_tools = load_tools()
     existing_slugs = [t["slug"] for t in existing_tools]
 
-    # التنويع الذكي بين الأدوات العربية والإنجليزية (لرفع عائد CPM الإعلاني)
     use_english = (len(existing_tools) % 3 == 2) and not CUSTOM_IDEA
 
     if CUSTOM_IDEA:
-        idea_instruction = f"صمم هذه الأداة تحديداً بأعلى جودة ممكنة: {CUSTOM_IDEA}"
-    elif use_english:
-        idea_instruction = (
-            f"Suggest a high-search-volume, low-competition English micro-tool (like a specific calculator, text converter, developer utility, or generator) "
-            f"that runs 100% client-side in JavaScript. Avoid duplicating these existing slugs: {existing_slugs}. "
-            f"Write the entire tool page, title, description, SEO guide, and FAQs in clear, natural English with dir='ltr' and lang='en'."
-        )
-    else:
-        idea_instruction = (
-            f"اقترح فكرة أداة ويب مجانية باللغة العربية تستهدف كلمة مفتاحية محددة (Long-tail Keyword) عليها بحث حقيقي في مصر والسعودية والعالم العربي "
-            f"ومنافسة ضعيفة (مثل حاسبات متخصصة، تحويلات، أدوات نصوص، مولدات روابط أو باركود، أو أدوات للمعلمين والطلاب والمسوقين)، "
-            f"وتجنب تكرار هذه الأدوات الموجودة مسبقاً: {existing_slugs}."
-        )
-
-    prompt = f"""
-أنت خبير SEO عالمي ومطور ويب محترف. {idea_instruction}
-
-الشروط الإلزام
+        idea_instruction = f"صمم هذه الأداة تحديداً بأعلى جودة ممكنة: {CUSTOM
