@@ -1,14 +1,15 @@
 name: Auto Tool Factory
 
 on:
+  schedule:
+    # يعمل تلقائياً كل يوم الساعة 10 صباحاً بتوقيت UTC (12 ظهراً بتوقيت القاهرة)
+    - cron: '0 10 * * *'
   workflow_dispatch:
     inputs:
       custom_idea:
-        description: 'فكرة أداة محددة (اختياري)'
+        description: 'فكرة أداة محددة (اختياري للتشغيل اليدوي)'
         required: false
         default: ''
-  schedule:
-    - cron: '0 10 * * *'
 
 permissions:
   contents: write
@@ -25,7 +26,7 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Generate New Tool with Gemini
+      - name: Generate New Tool & Update Feeds
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           CUSTOM_IDEA: ${{ github.event.inputs.custom_idea }}
