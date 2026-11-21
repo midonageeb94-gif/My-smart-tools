@@ -1,10 +1,4 @@
-import os
-import json
-import re
-import socket
-import random
-import urllib.request
-import urllib.error
+import os, json, re, socket, random, urllib.request, urllib.error
 from datetime import datetime, timezone
 
 API_KEY = os.environ.get("GEMINI_API_KEY", "").strip()
@@ -19,230 +13,117 @@ def load_tools():
 
 def get_candidate_models():
     url = f"https://generativelanguage.googleapis.com/v1beta/models?key={API_KEY}"
-    req = urllib.request.Request(url)
-    with urllib.request.urlopen(req, timeout=30) as response:
-        data = json.loads(response.read().decode("utf-8"))
-        models = data.get("models", [])
-
-    excluded_words = ["omni", "audio", "image", "tts", "embedding", "aqa", "vision", "robotics", "computer-use", "deep-research"]
-    gemini_flash = []
-    gemini_others = []
-    gemma_models = []
-
+    with urllib.request.urlopen(urllib.request.Request(url), timeout=30) as r:
+        models = json.loads(r.read().decode("utf-8")).get("models", [])
+    bad = ["omni", "audio", "image", "tts", "embedding", "aqa", "vision", "robotics", "computer-use", "deep-research"]
+    flash, others, gemma = [], [], []
     for m in models:
-        name = m["name"]
-        lower = name.lower()
-        methods = m.get("supportedGenerationMethods", [])
-        if "generateContent" not in methods or any(w in lower for w in excluded_words):
+        n, low = m["name"], m["name"].lower()
+        if "generateContent" not in m.get("supportedGenerationMethods", []) or any(w in low for w in bad):
             continue
-        if "gemini" in lower and "flash" in lower:
-            gemini_flash.append(name)
-        elif "gemini" in lower:
-            gemini_others.append(name)
-        else:
-            gemma_models.append(name)
-
-    gemini_flash.sort(reverse=True)
-    return gemini_flash + gemini_others + gemma_models
-
-def extract_json_from_text(text):
-    text = text.strip()
-    text = re.sub(r"^```(?:json)?\s*", "", text)
-    text = re.sub(r"\s*```$", "", text)
-    match = re.search(r"\{.*\}", text, re.DOTALL)
-    if match:
-        return json.loads(match.group(0))
-    raise ValueError("لم يتم العثور على JSON صالح في الرد")
+        if "gemini" in low and "flash" in low: flash.append(n)
+        elif "gemini" in low: others.append(n)
+        else: gemma.append(n)
+    flash.sort(reverse=True)
+    return flash + others + gemma
 
 def call_gemini(prompt):
     if not API_KEY:
-        raise ValueError("خطأ: مفتاح GEMINI_API_KEY غير مضاف في Secrets!")
-
-    candidates = get_candidate_models()
-    if not candidates:
-        raise RuntimeError("لم يتم العثور على أي موديل نصي متاح في المفتاح.")
-
-    last_error = ""
-    for model_name in candidates:
-        print(f"جاري تجربة الموديل: {model_name} ...")
-        url = f"https://generativelanguage.googleapis.com/v1beta/{model_name}:generateContent?key={API_KEY}"
-        
-        gen_config = {"temperature": 0.75}
-        if "gemini" in model_name.lower():
-            gen_config["responseMimeType"] = "application/json"
-
-        payload = {
-            "contents": [{"parts": [{"text": prompt}]}],
-            "generationConfig": gen_config
-        }
-        req = urllib.request.Request(
-            url,
-            data=json.dumps(payload).encode("utf-8"),
-            headers={"Content-Type": "application/json"}
-        )
+        raise ValueError("GEMINI_API_KEY is missing")
+    last_err = ""
+    for m in get_candidate_models():
+        print(f"Trying: {m}")
+        url = f"https://generativelanguage.googleapis.com/v1beta/{m}:generateContent?key={API_KEY}"
+        cfg = {"temperature": 0.75}
+        if "gemini" in m.lower():
+            cfg["responseMimeType"] = "application/json"
+        body = json.dumps({"contents": [{"parts": [{"text": prompt}]}], "generationConfig": cfg}).encode("utf-8")
+        req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"})
         try:
-            with urllib.request.urlopen(req, timeout=65) as response:
-                data = json.loads(response.read().decode("utf-8"))
-                raw_text = data["candidates"][0]["content"]["parts"][0]["text"]
-                parsed = extract_json_from_text(raw_text)
-                print(f"نجح التوليد عبر الموديل: {model_name}")
-                return parsed
-        except urllib.error.HTTPError as e:
-            err_body = e.read().decode("utf-8", errors="ignore")
-            last_error = f"{model_name} -> كود {e.code}: {err_body[:150]}"
-            print(f"تم تخطي {model_name} (كود {e.code})، جاري تجربة الموديل التالي...")
-            continue
-        except (TimeoutError, socket.timeout, urllib.error.URLError) as e:
-            last_error = f"{model_name} -> انتهت مهلة الاتصال: {e}"
-            print(f"تأخر {model_name} في الرد، جاري الانتقال للموديل التالي...")
-            continue
+            with urllib.request.urlopen(req, timeout=65) as r:
+                txt = json.loads(r.read().decode("utf-8"))["candidates"][0]["content"]["parts"][0]["text"].strip()
+                txt = re.sub(r"^```(?:json)?\s*|\s*```$", "", txt)
+                return json.loads(re.search(r"\{.*\}", txt, re.DOTALL).group(0))
         except Exception as e:
-            last_error = f"{model_name} -> خطأ تحليل الرد: {e}"
-            print(f"رد غير صالح من {model_name}، جاري تجربة التالي...")
+            last_err = f"{m}: {e}"
             continue
+    raise RuntimeError(f"All models failed. Last error: {last_err}")
 
-    raise RuntimeError(f"فشلت جميع الموديلات المتاحة. آخر خطأ: {last_error}")
-
-def build_related_tools_html(existing_tools, is_arabic=True):
-    if not existing_tools:
-        return ""
-    sample = random.sample(existing_tools, min(4, len(existing_tools)))
-    heading = "أدوات مجانية أخرى قد تهمك" if is_arabic else "More Free Online Tools"
-    cards = ""
-    for t in sample:
-        cards += f"""
-        <a href="/{t['slug']}/" class="block p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 hover:shadow-sm transition">
-          <div class="text-xs font-semibold text-emerald-700 mb-1">{t.get('category', 'Tool')}</div>
-          <div class="font-bold text-slate-800 text-sm mb-1">{t['title']}</div>
-          <div class="text-xs text-slate-500 line-clamp-2">{t['description']}</div>
-        </a>
-        """
-    return f"""
-    <section class="mt-10 pt-8 border-t border-slate-200">
-      <h2 class="text-lg font-extrabold text-slate-800 mb-4">{heading}</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {cards}
-      </div>
-    </section>
-    """
+def related_html(tools, is_ar=True):
+    if not tools: return ""
+    head = "أدوات مجانية أخرى قد تهمك" if is_ar else "More Free Online Tools"
+    cards = "".join(
+        f'<a href="/{t["slug"]}/" class="block p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 transition">'
+        f'<div class="text-xs font-semibold text-emerald-700 mb-1">{t.get("category","Tool")}</div>'
+        f'<div class="font-bold text-slate-800 text-sm mb-1">{t["title"]}</div>'
+        f'<div class="text-xs text-slate-500">{t["description"]}</div></a>'
+        for t in random.sample(tools, min(4, len(tools)))
+    )
+    return f'<section class="mt-10 pt-8 border-t border-slate-200"><h2 class="text-lg font-extrabold text-slate-800 mb-4">{head}</h2><div class="grid grid-cols-1 sm:grid-cols-2 gap-4">{cards}</div></section>'
 
 def main():
-    existing_tools = load_tools()
-    existing_slugs = [t["slug"] for t in existing_tools]
-
-    use_english = (len(existing_tools) % 3 == 2) and not CUSTOM_IDEA
+    tools = load_tools()
+    slugs = [t["slug"] for t in tools]
+    use_en = (len(tools) % 3 == 2) and not CUSTOM_IDEA
 
     if CUSTOM_IDEA:
-        idea_instruction = f"صمم هذه الأداة تحديداً بأعلى جودة ممكنة: {CUSTOM_IDEA}"
-    elif use_english:
-        idea_instruction = (
-            f"Suggest a high-search-volume, low-competition English micro-tool (like a specific calculator, text converter, developer utility, or generator) "
-            f"that runs 100% client-side in JavaScript. Avoid duplicating these existing slugs: {existing_slugs}. "
-            f"Write the entire tool page, title, description, SEO guide, and FAQs in clear, natural English with dir='ltr' and lang='en'."
-        )
+        idea = f"Build this exact tool: {CUSTOM_IDEA}"
+    elif use_en:
+        idea = f"Suggest a high-search, low-competition English client-side web micro-tool (dir='ltr', lang='en'). Avoid: {slugs}."
     else:
-        idea_instruction = (
-            f"اقترح فكرة أداة ويب مجانية باللغة العربية تستهدف كلمة مفتاحية محددة (Long-tail Keyword) عليها بحث حقيقي في مصر والسعودية والعالم العربي "
-            f"ومنافسة ضعيفة (مثل حاسبات متخصصة، تحويلات، أدوات نصوص، مولدات روابط أو باركود، أو أدوات للمعلمين والطلاب والمسوقين)، "
-            f"وتجنب تكرار هذه الأدوات الموجودة مسبقاً: {existing_slugs}."
-        )
+        idea = f"اقترح أداة ويب عربية مجانية تستهدف كلمة مفتاحية محددة قليلة المنافسة في مصر والسعودية. تجنب: {slugs}."
 
     prompt = (
-        f"أنت خبير SEO عالمي ومطور ويب محترف. {idea_instruction}\n\n"
-        "الشروط الإلزامية للأداة:\n"
-        "1. تعمل بالكامل في المتصفح بـ HTML و Tailwind CSS (عبر CDN) و JavaScript بدون أي API خارجي، وتكون دقيقة ومفيدة فعلياً للمستخدم مع زر نسخ النتيجة أو تحميلها.\n"
-        "2. تصميم عصري متجاوب مع الموبايل (استخدم خط Cairo من Google Fonts للأدوات العربية، و Inter للأدوات الإنجليزية).\n"
-        "3. تحسين SEO كامل: عنوان <title> جذاب غني بالكلمات المفتاحية، ووسم <meta name='description'>.\n"
-        "4. يجب أن تحتوي الصفحة أعلى الأداة على حاوية الإعلان العلوي بالضبط:\n"
-        "   <div id=\"ad-slot-top\" class=\"w-full min-h-[90px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6\">Ad Space</div>\n"
-        "5. ويجب أن تحتوي أسفل الأداة مباشرة على حاوية الإعلان السفلي بالضبط:\n"
-        "   <div id=\"ad-slot-bottom\" class=\"w-full min-h-[250px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6\">Ad Space</div>\n"
-        "6. أضف أسفل الإعلان السفلي مقالاً تعريفياً مفيداً يشرح طريقة استخدام الأداة وفوائدها، وقسم الأسئلة الشائعة (FAQ) مع كود Schema.org JSON-LD في <head> لرفع الترتيب في جوجل.\n"
-        "7. أضف في الهيدر رابطاً واضحاً للعودة للرئيسية (<a href='/'>الرئيسية</a> أو <a href='/'>Home</a>).\n"
-        "8. يجب أن تحتوي قبل إغلاق </body> مباشرة على:\n"
-        "   <script src=\"/ads.js\"></script>\n\n"
-        "أعد كائن JSON فقط بدون أي نص إضافي، يحتوي على المفاتيح التالية:\n"
-        "- \"slug\": رابط إنجليزي قصير مفصول بشرطات مثل vat-calculator-saudi\n"
-        "- \"title\": عنوان الأداة المختصر للبطاقة (بنفس لغة الأداة)\n"
-        "- \"category\": تصنيف الأداة مثل حاسبات أو أدوات النصوص أو Calculators\n"
-        "- \"description\": وصف جذاب من سطرين للأداة (بنفس لغة الأداة)\n"
-        "- \"is_arabic\": true إذا كانت الأداة بالعربية أو false إذا كانت بالإنجليزية\n"
-        "- \"html_code\": كود HTML الكامل للصفحة من <!DOCTYPE html> إلى </html>\n"
+        f"You are an expert SEO web developer. {idea}\n"
+        "Requirements:\n"
+        "1. 100% client-side HTML + Tailwind CSS CDN + JavaScript with copy/reset button.\n"
+        "2. Responsive design (Cairo font for Arabic, Inter for English), full SEO <title> and <meta description>.\n"
+        "3. Include top ad slot: <div id=\"ad-slot-top\" class=\"w-full min-h-[90px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6\">Ad Space</div>\n"
+        "4. Include bottom ad slot: <div id=\"ad-slot-bottom\" class=\"w-full min-h-[250px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6\">Ad Space</div>\n"
+        "5. Add SEO guide, FAQ section with JSON-LD Schema in <head>, Home link (<a href='/'>Home</a>), and <script src=\"/ads.js\"></script> before </body>.\n"
+        "Return ONLY valid JSON with keys: slug, title, category, description, is_arabic (boolean), html_code."
     )
 
-    print("جاري التواصل مع Gemini لتوليد الأداة...")
-    tool_data = call_gemini(prompt)
-
-    slug = re.sub(r"[^a-z0-9-]", "", tool_data["slug"].lower().strip())
-    if not slug or slug in existing_slugs:
+    data = call_gemini(prompt)
+    slug = re.sub(r"[^a-z0-9-]", "", data["slug"].lower().strip())
+    if not slug or slug in slugs:
         slug = f"tool-{int(datetime.now().timestamp())}"
 
-    html_code = tool_data["html_code"]
-    is_arabic = tool_data.get("is_arabic", not use_english)
-
-    related_html = build_related_tools_html(existing_tools, is_arabic=is_arabic)
-    if related_html:
-        if "</main>" in html_code:
-            html_code = html_code.replace("</main>", f"{related_html}\n</main>", 1)
-        elif '<script src="/ads.js"></script>' in html_code:
-            html_code = html_code.replace('<script src="/ads.js"></script>', f'{related_html}\n<script src="/ads.js"></script>', 1)
+    html = data["html_code"]
+    rel = related_html(tools, data.get("is_arabic", not use_en))
+    if rel:
+        if "</main>" in html: html = html.replace("</main>", rel + "\n</main>", 1)
+        elif '<script src="/ads.js"></script>' in html: html = html.replace('<script src="/ads.js"></script>', rel + '\n<script src="/ads.js"></script>', 1)
 
     os.makedirs(slug, exist_ok=True)
     with open(f"{slug}/index.html", "w", encoding="utf-8") as f:
-        f.write(html_code)
+        f.write(html)
 
-    now_utc = datetime.now(timezone.utc)
-    new_entry = {
-        "slug": slug,
-        "title": tool_data["title"],
-        "category": tool_data["category"],
-        "description": tool_data["description"],
-        "url": f"{BASE_URL}/{slug}/",
-        "created_at": now_utc.strftime("%Y-%m-%d %H:%M"),
-        "pub_date_rfc822": now_utc.strftime("%a, %d %b %Y %H:%M:%S +0000")
-    }
-    existing_tools.insert(0, new_entry)
+    now = datetime.now(timezone.utc)
+    tools.insert(0, {
+        "slug": slug, "title": data["title"], "category": data["category"],
+        "description": data["description"], "url": f"{BASE_URL}/{slug}/",
+        "created_at": now.strftime("%Y-%m-%d %H:%M"),
+        "pub_date_rfc822": now.strftime("%a, %d %b %Y %H:%M:%S +0000")
+    })
     with open("tools.json", "w", encoding="utf-8") as f:
-        json.dump(existing_tools, f, ensure_ascii=False, indent=2)
+        json.dump(tools, f, ensure_ascii=False, indent=2)
 
-    sitemap_lines = [
-        '<?xml version="1.0" encoding="UTF-8"?>',
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-        f'  <url><loc>{BASE_URL}/</loc><priority>1.0</priority></url>'
-    ]
-    for t in existing_tools:
-        sitemap_lines.append(f'  <url><loc>{BASE_URL}/{t["slug"]}/</loc><priority>0.8</priority></url>')
-    sitemap_lines.append('</urlset>')
-
+    sm = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">', f'  <url><loc>{BASE_URL}/</loc><priority>1.0</priority></url>']
+    sm += [f'  <url><loc>{BASE_URL}/{t["slug"]}/</loc><priority>0.8</priority></url>' for t in tools]
+    sm.append('</urlset>')
     with open("sitemap.xml", "w", encoding="utf-8") as f:
-        f.write("\n".join(sitemap_lines))
+        f.write("\n".join(sm))
 
-    rss_items = []
-    for t in existing_tools[:20]:
-        pub_date = t.get("pub_date_rfc822") or now_utc.strftime("%a, %d %b %Y %H:%M:%S +0000")
-        rss_items.append(f"""    <item>
-      <title><![CDATA[{t['title']}]]></title>
-      <link>{BASE_URL}/{t['slug']}/</link>
-      <guid>{BASE_URL}/{t['slug']}/</guid>
-      <description><![CDATA[{t['description']}]]></description>
-      <enclosure url="{BASE_URL}/icon.png" type="image/png" />
-      <pubDate>{pub_date}</pubDate>
-    </item>""")
-
-    rss_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
-  <channel>
-    <title>أدواتي الذكية - أدوات ويب مجانية</title>
-    <link>{BASE_URL}/</link>
-    <description>أحدث أدوات الويب المجانية والسريعة أونلاين</description>
-{chr(10).join(rss_items)}
-  </channel>
-</rss>"""
-
+    items = []
+    for t in tools[:20]:
+        pd = t.get("pub_date_rfc822") or now.strftime("%a, %d %b %Y %H:%M:%S +0000")
+        items.append(f"    <item><title><![CDATA[{t['title']}]]></title><link>{BASE_URL}/{t['slug']}/</link><guid>{BASE_URL}/{t['slug']}/</guid><description><![CDATA[{t['description']}]]></description><enclosure url=\"{BASE_URL}/icon.png\" type=\"image/png\" /><pubDate>{pd}</pubDate></item>")
+    rss = f'<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>أدواتي الذكية</title><link>{BASE_URL}/</link><description>أدوات ويب مجانية</description>\n' + "\n".join(items) + '\n</channel></rss>'
     with open("rss.xml", "w", encoding="utf-8") as f:
-        f.write(rss_xml)
+        f.write(rss)
 
-    print(f"تم توليد ونشر الأداة وتحديث الخرائط بنجاح: {BASE_URL}/{slug}/")
+    print(f"Published: {BASE_URL}/{slug}/")
 
 if __name__ == "__main__":
     main()
