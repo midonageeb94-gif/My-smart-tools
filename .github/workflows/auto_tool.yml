@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -38,5 +40,6 @@ jobs:
           git config user.email "bot@users.noreply.github.com"
           git add .
           git commit -m "Auto-generated new micro-tool" || exit 0
-          git pull --rebase origin main
-          git push
+          git fetch origin main
+          git merge -s recursive -X ours origin/main -m "Merge remote changes" || true
+          git push origin main
