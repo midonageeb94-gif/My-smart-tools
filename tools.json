@@ -1,5 +1,14 @@
 [
   {
+    "slug": "calculate-end-of-service-indemnity-ksa",
+    "title": "حسب نهاية الخدمة بالسعودية - حساب مكافأة نهاية الخدمة نظام العمل السعودي",
+    "category": "Tools",
+    "description": "أداة مجانية دقيقة لحساب مكافأة نهاية الخدمة في السعودية حسب نظام العمل السعودي الجديد للقطاعين الخاص والعام. احسب مستحقاتك بدقة فوراً.",
+    "url": "https://mysmarttools.midonageeb94.workers.dev/calculate-end-of-service-indemnity-ksa/",
+    "created_at": "2026-11-24 10:54",
+    "pub_date_rfc822": "Tue, 24 Nov 2026 10:54:34 +0000"
+  },
+  {
     "slug": "base64-image-encoder",
     "title": "Base64 Image Encoder | Convert Images to Base64 Online",
     "category": "Developer Tools",

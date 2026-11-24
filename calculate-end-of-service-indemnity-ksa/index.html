@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حساب مكافأة نهاية الخدمة بالسعودية بدقة | نظام العمل السعودي</title>
+    <meta name="description" content="احسب مكافأة نهاية الخدمة في السعودية بسهولة وفقاً لنظام العمل السعودي. أدخل الراتب ومدة الخدمة ونوع الاستقالة لمعرفة المستحقات المالية فوراً.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+    </style>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "كيف يتم حساب مكافأة نهاية الخدمة في نظام العمل السعودي؟",
+          "@type": "Question",
+          "name": "كيف يتم حساب مكافأة نهاية الخدمة في نظام العمل السعودي؟",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "تُحسب بواقع أجر نصف شهر عن كل سنة من السنوات الخمس الأولى، وأجر شهر عن كل سنة بعد ذلك، مع احتساب مدة الخدمة للأجزاء من السنة بنسبة ما قضاه منها."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "هل تستحق مكافأة نهاية الخدمة في حالة الاستقالة؟",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "نعم، يستحق العامل مكافأة نهاية الخدمة في حال الاستقالة وفقاً لمدة خدمته المستمرة؛ فإذا كانت أقل من سنتين فلا يستحق شيئاً، وإذا كانت بين سنتين وخمس سنوات يستحق ثلث المكافأة، وتزيد النسبة بحسب مدة الخدمة."
+          }
+        }
+      ]
+    }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- Main Container -->
+    <div class="max-w-4xl mx-auto px-4 py-8 w-full">
+        <!-- Header & Home Link -->
+        <header class="flex justify-between items-center mb-6">
+            <a href="/" class="text-emerald-600 font-bold hover:underline flex items-center gap-1">
+                &larr; <span class="Home">الرئيسية</span>
+            </a>
+            <span class="text-xs bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-semibold">نظام العمل السعودي</span>
+        </header>
+
+        <!-- Title Section -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-black text-slate-900 mb-3">حساب مكافأة نهاية الخدمة بالسعودية</h1>
+            <p class="text-slate-600 text-sm md:text-base">احسب مستحقاتك المالية بدقة بناءً على نظام العمل السعودي ولائحته التنفيذية.</p>
+        </div>
+
+        <!-- Top Ad Slot -->
+        <div id="ad-slot-top" class="w-full min-h-[90px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6">Ad Space</div>
+
+        <!-- Calculator Card -->
+        <div class="bg-white border border-slate-200 shadow-xl rounded-2xl p-6 md:p-8 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <!-- Salary Input -->
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2" for="salary">الراتب الأخير (ريال سعودي):</label>
+                    <input type="number" id="salary" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800" placeholder="مثال: 10000">
+                </div>
+
+                <!-- Termination Type -->
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2" for="terminationType">سبب انتهاء العلاقة العمالية:</label>
+                    <select id="terminationType" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800 bg-white">
+                        <option value="endOfContract">انتهاء عقد / إفلاس / قوة قاهرة</option>
+                        <option value="resignation">استقالة العامل</option>
+                        <option value="article80">إنهاء العقد بسبب المادة (80)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Service Duration -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2" for="years">سنوات الخدمة:</label>
+                    <input type="number" id="years" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800" placeholder="مثال: 4">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2" for="months">أشهر الخدمة الإضافية:</label>
+                    <input type="number" id="months" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800" placeholder="مثال: 6" value="0">
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap gap-4">
+                <button onclick="calculateIndemnity()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-xl transition duration-200 shadow-md cursor-pointer">احسب المستحقات</button>
+                <button onclick="resetForm()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-3.5 px-6 rounded-xl transition duration-200 cursor-pointer">إعادة تعيين</button>
+            </div>
+
+            <!-- Results Box -->
+            <div id="resultContainer" class="hidden mt-8 p-6 bg-emerald-50 border border-emerald-200 rounded-xl">
+                <h3 class="text-lg font-bold text-emerald-900 mb-2">نتائج الحساب:</h3>
+                <p class="text-2xl font-black text-emerald-700 mb-4" id="totalAmount">0 ريال</p>
+                <p class="text-sm text-emerald-800" id="resultDetails"></p>
+                <button onclick="copyResult()" id="copyBtn" class="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold py-2 px-4 rounded-lg transition duration-200 cursor-pointer">نسخ النتيجة</button>
+            </div>
+        </div>
+
+        <!-- SEO Guide & Article Section -->
+        <article class="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 md:p-8 mb-8 prose max-w-none text-slate-700">
+            <h2 class="text-2xl font-bold text-slate-900 mb-4">دليل حساب مكافأة نهاية الخدمة في نظام العمل السعودي</h2>
+            <p class="mb-4">تعتبر مكافأة نهاية الخدمة حقاً أساسياً لكل عامل وفقاً للمادة (84) من نظام العمل السعودي. تهدف هذه الأداة إلى مساعدة الموظفين وأصحاب العمل في تقدير قيمة المكافأة المستחقة عند انتهاء العلاقة التعاقدية سواء كان ذلك بسبب انتهاء مدة العقد أو الاستقالة.</p>
+            
+            <h3 class="text-xl font-bold text-slate-900 mt-6 mb-3">آلية حساب المكافأة في الحالة الطبيعية:</h3>
+            <ul class="list-disc list-inside space-y-2 mb-4">
+                <li>أجر نصف شهر عن كل سنة من السنوات الخمس الأولى.</li>
+                <li>أجر شهر كامل عن كل سنة ما زاد عن ذلك.</li>
+                <li>يستحق العامل مكافأة عن أجزاء السنة بنسبة ما قضاه منها في العمل.</li>
+            </ul>
+
+            <h3 class="text-xl font-bold text-slate-900 mt-6 mb-3">الاستقالة وحساب نهاية الخدمة (المادة 85):</h3>
+            <p>إذا كانت انتهاء العلاقة العمالية بسبب استقالة العامل، فإنه يستحق نسبة من المكافأة بناءً على مدة خدمته المستمرة:</p>
+            <ul class="list-disc list-inside space-y-2">
+                <li>أقل من سنتين: لا يستحق شيئاً.</li>
+                <li>من سنتين إلى أقل من 5 سنوات: يستحق ثلث (1/3) المكافأة.</li>
+                <li>من 5 سنوات إلى أقل من 10 سنوات: يستحق ثلثي (2/3) المكافأة.</li>
+                <li>10 سنوات فأكثر: يستحق المكافأة كاملة.</li>
+            </ul>
+        </article>
+
+        <!-- FAQ Section -->
+        <section class="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 md:p-8 mb-8">
+            <h2 class="text-2xl font-bold text-slate-900 mb-6">الأسئلة الشائعة</h2>
+            <div class="space-y-4">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">كيف يتم حساب مكافأة نهاية الخدمة في نظام العمل السعودي؟</h3>
+                    <p class="text-sm text-slate-600">تُحسب بواقع أجر نصف شهر عن كل سنة من السنوات الخمس الأولى، وأجر شهر عن كل سنة بعد ذلك، مع احتساب مدة الخدمة للأجزاء من السنة.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-1">هل تستحق مكافأة نهاية الخدمة في حالة الاستقالة؟</h3>
+                    <p class="text-sm text-slate-600">نعم، بحسب المدة المستمرة، إذا تجاوزت السنتين يستحق الموظف نسباً محددة وفق المادة 85 من نظام العمل.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bottom Ad Slot -->
+        <div id="ad-slot-bottom" class="w-full min-h-[250px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6">Ad Space</div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-6 text-xs text-slate-500 border-t border-slate-200 bg-white">
+        جميع الحقوق محفوظة &copy; 2025 - أدوات الويب الاحترافية
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        function calculateIndemnity() {
+            const salaryInput = parseFloat(document.getElementById('salary').value);
+            const yearsInput = parseFloat(document.getElementById('years').value) || 0;
+            const monthsInput = parseFloat(document.getElementById('months').value) || 0;
+            const terminationType = document.getElementById('terminationType').value;
+
+            if (isNaN(salaryInput) || salaryInput <= 0) {
+                alert('الرجاء إدخال راتب صحيح.');
+                return;
+            }
+
+            const totalYears = yearsInput + (monthsInput / 12);
+            let award = 0;
+
+            if (terminationType === 'article80') {
+                award = 0;
+            } else {
+                if (totalYears <= 5) {
+                    award = (salaryInput / 2) * totalYears;
+                } else {
+                    award = ((salaryInput / 2) * 5) + (salaryInput * (totalYears - 5));
+                }
+
+                if (terminationType === 'resignation') {
+                    if (totalYears < 2) {
+                        award = 0;
+                    } else if (totalYears >= 2 && totalYears < 5) {
+                        award = award * (1 / 3);
+                    } else if (totalYears >= 5 && totalYears < 10) {
+                        award = award * (2 / 3);
+                    }
+                    // >= 10 gets full award
+                }
+            }
+
+            const resultContainer = document.getElementById('resultContainer');
+            const totalAmount = document.getElementById('totalAmount');
+            const resultDetails = document.getElementById('resultDetails');
+
+            totalAmount.textContent = award.toLocaleString('ar-SA', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ريال سعودي';
+            resultDetails.innerHTML = `إجمالي مدة الخدمة المحسوبة: <strong>${yearsInput} سنة و ${monthsInput} شهر</strong><br>نوع الإنهاء: <strong>${document.getElementById('terminationType').selectedOptions[0].text}</strong>`;
+            resultContainer.classList.remove('hidden');
+        }
+
+        function resetForm() {
+            document.getElementById('salary').value = '';
+            document.getElementById('years').value = '';
+            document.getElementById('months').value = '0';
+            document.getElementById('terminationType').selectedIndex = 0;
+            document.getElementById('resultContainer').classList.add('hidden');
+        }
+
+        function copyResult() {
+            const textToCopy = document.getElementById('totalAmount').textContent;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const btn = document.getElementById('copyBtn');
+                btn.textContent = 'تم النسخ!';
+                setTimeout(() => {
+                    btn.textContent = 'نسخ النتيجة';
+                }, 2000);
+            });
+        }
+    </script>
+    <section class="mt-10 pt-8 border-t border-slate-200"><h2 class="text-lg font-extrabold text-slate-800 mb-4">أدوات مجانية أخرى قد تهمك</h2><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><a href="/calculate-zakat-al-fitr-egypt-saudi/" class="block p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 transition"><div class="text-xs font-semibold text-emerald-700 mb-1">Tools</div><div class="font-bold text-slate-800 text-sm mb-1">حاسبة زكاة الفطر 2024 - حساب قيمة زكاة الفطر في مصر والسعودية</div><div class="text-xs text-slate-500">أداة مجانية لحساب قيمة زكاة الفطر بدقة بناءً على أسعار الأرز أو القمح في مصر والسعودية. احسب مقدار الزكاة الواجب إخراجها بسهولة.</div></a><a href="/arabic-tashkeel-remover/" class="block p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 transition"><div class="text-xs font-semibold text-emerald-700 mb-1">أدوات النصوص</div><div class="font-bold text-slate-800 text-sm mb-1">إزالة التشكيل وتنظيف النصوص العربية</div><div class="text-xs text-slate-500">احذف الحركات الإعرابية، الكشيدة، والمسافات الزائدة، ووحّد الهمزات بضغطة زر واحدة.</div></a><a href="/pixel-to-rem-converter/" class="block p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 transition"><div class="text-xs font-semibold text-emerald-700 mb-1">أدوات المطورين</div><div class="font-bold text-slate-800 text-sm mb-1">متحول وحدات البكسل إلى ريم (PX to REM)</div><div class="text-xs text-slate-500">أداة سريعة ومجانية لمطوري الويب لتحويل قيم البكسل (PX) إلى وحدات REM النسبية والعكس بدقة وسهولة لتصميم متجاوب.</div></a><a href="/arabic-word-counter-and-reading-time/" class="block p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 transition"><div class="text-xs font-semibold text-emerald-700 mb-1">أدوات النصوص</div><div class="font-bold text-slate-800 text-sm mb-1">حاسبة الكلمات ووقت القراءة العربي</div><div class="text-xs text-slate-500">أداة دقيقة لحساب عدد الكلمات، الحروف، السطور، وتقدير وقت القراءة للنصوص العربية والانجليزية مباشرة في متصفحك.</div></a></div></section>
+<script src="/ads.js"></script>
+</body>
+</html>
