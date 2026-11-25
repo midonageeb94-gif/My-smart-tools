@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حساب قسط القرض الشخصي في مصر والسعودية - احسب تمويلك بسهولة</title>
+    <meta name="description" content="احسب قيمة القسط الشهري للقرض الشخصي والتمويل البنكي في مصر والسعودية بناءً على مبلغ القرض، نسبة الفائدة، وفترة السداد بدقة وسرعة.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "كيف يتم حساب قسط القرض الشخصي؟",
+          "-name": "كيف يتم حساب قسط القرض الشخصي؟",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "يتم حساب القسط الشهري بناءً على مبلغ القرض الإجمالي، ومعدل الفائدة السنوي (سواء كان متناقصاً أو ثابتاً)، وعدد أشهر أو سنوات السداد."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "ما هي الشروط العامة للحصول على تمويل شخصي في السعودية ومصر؟",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "تختلف الشروط حسب البنك، لكنها تشمل عموماً تحويل الراتب، الحد الأدنى للدخل، وألا يتجاوز استقطاع القسط النسبة المسموح بها من الراتب (غالباً 33% إلى 50%)."
+          }
+        }
+      ]
+    }
+    </script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <header class="bg-white border-b border-slate-200 shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="/" class="text-blue-600 font-bold text-lg hover:underline">Home</a>
+            <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-semibold">أداة مالية</span>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-8 w-full flex-grow">
+        
+        <div id="ad-slot-top" class="w-full min-h-[90px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6">Ad Space</div>
+
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-slate-900 mb-2">حساب قسط القرض الشخصي في مصر والسعودية</h1>
+            <p class="text-slate-600">أدخل تفاصيل التمويل لمعرفة قيمة القسط الشهري وإجمالي الفوائد المستحقة.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">مبلغ القرض (جنيه / ريال)</label>
+                    <input type="number" id="loanAmount" placeholder="مثال: 100000" class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">نسبة الفائدة السنوية (%)</label>
+                    <input type="number" step="0.1" id="interestRate" placeholder="مثال: 7.5" class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">مدة السداد (بالسنوات)</label>
+                    <input type="number" id="loanTerm" placeholder="مثال: 5" class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">نوع الفائدة</label>
+                    <select id="interestType" class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <option value="flat">فائدة ثابتة (شائعة في مصر غالباً)</option>
+                        <option value="reducing">فائدة متناقصة (شائعة في التمويل العقاري والشخصي بالسعودية)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-4 mb-8">
+                <button onclick="calculateLoan()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition duration-200">احسب القسط</button>
+                <button onclick="resetForm()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-3 px-6 rounded-xl transition duration-200">إعادة ضبط</button>
+            </div>
+
+            <div id="resultSection" class="hidden bg-blue-50 border border-blue-200 rounded-xl p-6">
+                <h3 class="text-lg font-bold text-blue-900 mb-4">نتائج الحساب:</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <span class="block text-xs text-slate-500 mb-1">القسط الشهري</span>
+                        <strong id="monthlyPayment" class="text-xl text-blue-600">0</strong>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <span class="block text-xs text-slate-500 mb-1">إجمالي الفوائد</span>
+                        <strong id="totalInterest" class="text-xl text-blue-600">0</strong>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <span class="block text-xs text-slate-500 mb-1">إجمالي السداد</span>
+                        <strong id="totalPayment" class="text-xl text-blue-600">0</strong>
+                    </div>
+                </div>
+                <div class="mt-4 flex justify-end">
+                    <button onclick="copyResults()" class="text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">نسخ النتائج</button>
+                </div>
+            </div>
+        </div>
+
+        <section class="mt-12 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h2 class="text-2xl font-bold text-slate-900 mb-4">دليل احتساب القروض الشخصية في السعودية ومصر</h2>
+            <p class="text-slate-600 mb-4">تعتبر القروض الشخصية والتمويلات البنكية أداة شائعة لتغطية النفقات الكبرى أو توحيد الالتزامات المالية. يختلف احتساب الفائدة بين البنوك المصرية والسعودية بناءً على السياسات الائتمانية والبنك المركزي في كل بلد.</p>
+            <h3 class="text-lg font-bold text-slate-800 mb-2">الفرق بين الفائدة الثابتة والمتناقصة</h3>
+            <p class="text-slate-600">الفائدة الثابتة تُحسب على كامل مبلغ القرض الأصلي طوال مدة التمويل، بينما الفائدة المتناقصة تُحسب على المبلغ المتبقي فقط من اصل القرض بعد كل دفعة شهرية مسددة.</p>
+        </section>
+
+        <section class="mt-8 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h2 class="text-2xl font-bold text-slate-900 mb-4">الأسئلة الشائعة</h2>
+            <div class="space-y-4">
+                <div>
+                    <h3 class="font-bold text-slate-800">كيف يتم حساب قسط القرض الشخصي؟</h3>
+                    <p class="text-slate-600 text-sm mt-1">يتم حساب القسط الشهري بناءً على مبلغ القرض الإجمالي، ومعدل الفائدة السنوي، وعدد أشهر أو سنوات السداد.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-800">ما هي الشروط العامة للحصول على تمويل شخصي في السعودية ومصر؟</h3>
+                    <p class="text-slate-600 text-sm mt-1">تختلف الشروط حسب البنك، لكنها تشمل عموماً تحويل الراتب، الحد الأدنى للدخل، وألا يتجاوز استقطاع القسط النسبة المسموح بها من الراتب.</p>
+                </div>
+            </div>
+        </section>
+
+        <div id="ad-slot-bottom" class="w-full min-h-[250px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6">Ad Space</div>
+
+    <section class="mt-10 pt-8 border-t border-slate-200"><h2 class="text-lg font-extrabold text-slate-800 mb-4">أدوات مجانية أخرى قد تهمك</h2><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><a href="/arabic-word-counter-and-reading-time/" class="block p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 transition"><div class="text-xs font-semibold text-emerald-700 mb-1">أدوات النصوص</div><div class="font-bold text-slate-800 text-sm mb-1">حاسبة الكلمات ووقت القراءة العربي</div><div class="text-xs text-slate-500">أداة دقيقة لحساب عدد الكلمات، الحروف، السطور، وتقدير وقت القراءة للنصوص العربية والانجليزية مباشرة في متصفحك.</div></a><a href="/base64-image-encoder/" class="block p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 transition"><div class="text-xs font-semibold text-emerald-700 mb-1">Developer Tools</div><div class="font-bold text-slate-800 text-sm mb-1">Base64 Image Encoder | Convert Images to Base64 Online</div><div class="text-xs text-slate-500">Free online client-side tool to convert PNG, JPG, and SVG images into Base64 strings. Instantly generate data URIs for HTML and CSS with copy and reset features.</div></a><a href="/calculate-end-of-service-indemnity-ksa/" class="block p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 transition"><div class="text-xs font-semibold text-emerald-700 mb-1">Tools</div><div class="font-bold text-slate-800 text-sm mb-1">حسب نهاية الخدمة بالسعودية - حساب مكافأة نهاية الخدمة نظام العمل السعودي</div><div class="text-xs text-slate-500">أداة مجانية دقيقة لحساب مكافأة نهاية الخدمة في السعودية حسب نظام العمل السعودي الجديد للقطاعين الخاص والعام. احسب مستحقاتك بدقة فوراً.</div></a><a href="/arabic-tashkeel-remover/" class="block p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 transition"><div class="text-xs font-semibold text-emerald-700 mb-1">أدوات النصوص</div><div class="font-bold text-slate-800 text-sm mb-1">إزالة التشكيل وتنظيف النصوص العربية</div><div class="text-xs text-slate-500">احذف الحركات الإعرابية، الكشيدة، والمسافات الزائدة، ووحّد الهمزات بضغطة زر واحدة.</div></a></div></section>
+</main>
+
+    <footer class="bg-white border-t border-slate-200 py-6 text-center text-slate-500 text-sm">
+        <p>&copy; 2023 جميع الحقوق محفوظة - أداة حساب القروض</p>
+    </footer>
+
+    <script>
+        function calculateLoan() {
+            const amount = parseFloat(document.getElementById('loanAmount').value);
+            const rate = parseFloat(document.getElementById('interestRate').value) / 100;
+            const years = parseFloat(document.getElementById('loanTerm').value);
+            const type = document.getElementById('interestType').value;
+
+            if (!amount || !rate || !years) {
+                alert('الرجاء إدخال جميع الحقول بشكل صحيح.');
+                return;
+            }
+
+            const months = years * 12;
+            let monthlyPayment = 0;
+            let totalPayment = 0;
+            let totalInterest = 0;
+
+            if (type === 'flat') {
+                totalInterest = amount * rate * years;
+                totalPayment = amount + totalInterest;
+                monthlyPayment = totalPayment / months;
+            } else {
+                const monthlyRate = rate / 12;
+                monthlyPayment = (amount * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+                totalPayment = monthlyPayment * months;
+                totalInterest = totalPayment - amount;
+            }
+
+            document.getElementById('monthlyPayment').innerText = monthlyPayment.toFixed(2);
+            document.getElementById('totalInterest').innerText = totalInterest.toFixed(2);
+            document.getElementById('totalPayment').innerText = totalPayment.toFixed(2);
+            document.getElementById('resultSection').classList.remove('hidden');
+        }
+
+        function resetForm() {
+            document.getElementById('loanAmount').value = '';
+            document.getElementById('interestRate').value = '';
+            document.getElementById('loanTerm').value = '';
+            document.getElementById('resultSection').classList.add('hidden');
+        }
+
+        function copyResults() {
+            const mp = document.getElementById('monthlyPayment').innerText;
+            const ti = document.getElementById('totalInterest').innerText;
+            const tp = document.getElementById('totalPayment').innerText;
+            const text = `القسط الشهري: ${mp}\nإجمالي الفوائد: ${ti}\nإجمالي السداد: ${tp}`;
+            navigator.clipboard.writeText(text);
+            alert('تم نسخ النتائج بنجاح!');
+        }
+    </script>
+    <script src="/ads.js"></script>
+</body>
+</html>
