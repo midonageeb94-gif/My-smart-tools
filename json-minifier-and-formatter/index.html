@@ -1,0 +1,191 @@
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Minifier and Formatter - Free Online Cleaner</title>
+    <meta name="description" content="Free online JSON minifier and formatter tool. Clean, validate, minify, or beautify your JSON data instantly in your browser with zero server uploads.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "What is a JSON minifier?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "A JSON minifier removes all unnecessary whitespace, newlines, and indentation from a JSON string to reduce its file size for network transfer."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Is my JSON data secure?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes! All processing happens 100% client-side in your browser. Your sensitive data never gets sent to any server."
+                }
+            }
+        ]
+    }
+    </script>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+    <header class="bg-white border-b border-slate-200 py-4 px-6">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <a href="/" class="text-indigo-600 font-bold text-lg hover:underline">Home</a>
+            <span class="text-xs bg-indigo-50 text-indigo-600 font-medium px-2.5 py-1 rounded-full">Developer Tools</span>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 flex-grow w-full">
+        <!-- Top Ad Slot -->
+        <div id="ad-slot-top" class="w-full min-h-[90px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6">Ad Space</div>
+
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-slate-900 mb-2">JSON Minifier & Formatter</h1>
+            <p class="text-slate-600 max-w-xl mx-auto">Paste your JSON below to instantly beautify, minify, validate, or clear your data securely.</p>
+        </div>
+
+        <!-- Tool Interface -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Input Section -->
+                <div class="flex flex-col">
+                    <div class="flex justify-between items-center mb-2">
+                        <label for="json-input" class="font-semibold text-sm text-slate-700">Input JSON</label>
+                        <button onclick="clearInput()" class="text-xs text-rose-600 hover:underline font-medium">Clear</button>
+                    </div>
+                    <textarea id="json-input" rows="12" class="w-full p-3 font-mono text-xs bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="Paste your raw JSON here..."></textarea>
+                </div>
+
+                <!-- Output Section -->
+                <div class="flex flex-col">
+                    <div class="flex justify-between items-center mb-2">
+                        <label for="json-output" class="font-semibold text-sm text-slate-700">Output Result</label>
+                        <button onclick="copyOutput()" id="copy-btn" class="text-xs text-indigo-600 hover:underline font-medium">Copy Result</button>
+                    </div>
+                    <textarea id="json-output" rows="12" readonly class="w-full p-3 font-mono text-xs bg-slate-100 border border-slate-300 rounded-xl focus:outline-none"></textarea>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap gap-3 mt-6 justify-center">
+                <button onclick="formatJSON()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm px-5 py-2.5 rounded-xl transition shadow-sm">Beautify / Format</button>
+                <button onclick="minifyJSON()" class="bg-slate-800 hover:bg-slate-900 text-white font-medium text-sm px-5 py-2.5 rounded-xl transition shadow-sm">Minify</button>
+                <button onclick="validateJSON()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm px-5 py-2.5 rounded-xl transition shadow-sm">Validate</button>
+            </div>
+
+            <!-- Status Message -->
+            <div id="status-msg" class="mt-4 text-center text-sm font-medium"></div>
+        </div>
+
+        <!-- SEO Content & Guide -->
+        <section class="mt-12 bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+            <h2 class="text-xl font-bold text-slate-900 mb-4">How to Use the JSON Minifier & Formatter</h2>
+            <p class="text-slate-600 mb-4">JSON (JavaScript Object Notation) is a lightweight data-interchange format. Whether you are a developer looking to compress payloads for production APIs or debugging deeply nested JSON strings, this tool makes the process frictionless.</p>
+            <ul class="list-disc list-inside space-y-2 text-slate-600 mb-6">
+                <li><strong>Beautify:</strong> Adds proper indentation (2 spaces) and line breaks to make hard-to-read JSON human-readable.</li>
+                <li><strong>Minify:</strong> Strips out unnecessary characters to minimize payload sizes for optimal bandwidth consumption.</li>
+                <li><strong>Validate:</strong> Checks syntax validity instantly, highlighting missing quotes or trailing commas.</li>
+            </ul>
+
+            <h3 class="text-lg font-bold text-slate-900 mb-3">Frequently Asked Questions</h3>
+            <div class="space-y-4">
+                <div>
+                    <h4 class="font-semibold text-slate-800">Is my JSON data secure?</h4>
+                    <p class="text-slate-600 text-sm mt-1">Yes! All transformations run entirely inside your browser using client-side JavaScript. No data is ever transmitted to external servers.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-slate-800">What causes JSON validation errors?</h4>
+                    <p class="text-slate-600 text-sm mt-1">Common errors include unquoted keys, single quotes instead of double quotes, trailing commas, or unclosed brackets.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bottom Ad Slot -->
+        <div id="ad-slot-bottom" class="w-full min-h-[250px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6">Ad Space</div>
+    <section class="mt-10 pt-8 border-t border-slate-200"><h2 class="text-lg font-extrabold text-slate-800 mb-4">More Free Online Tools</h2><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><a href="/calculate-zakat-al-fitr-egypt-saudi/" class="block p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 transition"><div class="text-xs font-semibold text-emerald-700 mb-1">Tools</div><div class="font-bold text-slate-800 text-sm mb-1">حاسبة زكاة الفطر 2024 - حساب قيمة زكاة الفطر في مصر والسعودية</div><div class="text-xs text-slate-500">أداة مجانية لحساب قيمة زكاة الفطر بدقة بناءً على أسعار الأرز أو القمح في مصر والسعودية. احسب مقدار الزكاة الواجب إخراجها بسهولة.</div></a><a href="/base64-image-encoder/" class="block p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 transition"><div class="text-xs font-semibold text-emerald-700 mb-1">Developer Tools</div><div class="font-bold text-slate-800 text-sm mb-1">Base64 Image Encoder | Convert Images to Base64 Online</div><div class="text-xs text-slate-500">Free online client-side tool to convert PNG, JPG, and SVG images into Base64 strings. Instantly generate data URIs for HTML and CSS with copy and reset features.</div></a><a href="/calculate-end-of-service-indemnity-ksa/" class="block p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 transition"><div class="text-xs font-semibold text-emerald-700 mb-1">Tools</div><div class="font-bold text-slate-800 text-sm mb-1">حسب نهاية الخدمة بالسعودية - حساب مكافأة نهاية الخدمة نظام العمل السعودي</div><div class="text-xs text-slate-500">أداة مجانية دقيقة لحساب مكافأة نهاية الخدمة في السعودية حسب نظام العمل السعودي الجديد للقطاعين الخاص والعام. احسب مستحقاتك بدقة فوراً.</div></a><a href="/pixel-to-rem-converter/" class="block p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 transition"><div class="text-xs font-semibold text-emerald-700 mb-1">أدوات المطورين</div><div class="font-bold text-slate-800 text-sm mb-1">متحول وحدات البكسل إلى ريم (PX to REM)</div><div class="text-xs text-slate-500">أداة سريعة ومجانية لمطوري الويب لتحويل قيم البكسل (PX) إلى وحدات REM النسبية والعكس بدقة وسهولة لتصميم متجاوب.</div></a></div></section>
+</main>
+
+    <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500">
+        <p>&copy; 2025 JSON Minifier & Formatter. 100% Client-Side Utility.</p>
+    </footer>
+
+    <script>
+        function formatJSON() {
+            const input = document.getElementById('json-input').value;
+            const status = document.getElementById('status-msg');
+            try {
+                if (!input.trim()) throw new Error('Input is empty.');
+                const parsed = JSON.parse(input);
+                document.getElementById('json-output').value = JSON.stringify(parsed, null, 2);
+                status.textContent = 'JSON successfully formatted!';
+                status.className = 'mt-4 text-center text-sm font-medium text-emerald-600';
+            } catch (err) {
+                status.textContent = 'Invalid JSON: ' + err.message;
+                status.className = 'mt-4 text-center text-sm font-medium text-rose-650 text-rose-600';
+            }
+        }
+
+        function minifyJSON() {
+            const input = document.getElementById('json-input').value;
+            const status = document.getElementById('status-msg');
+            try {
+                if (!input.trim()) throw new Error('Input is empty.');
+                const parsed = JSON.parse(input);
+                document.getElementById('json-output').value = JSON.stringify(parsed);
+                status.textContent = 'JSON successfully minified!';
+                status.className = 'mt-4 text-center text-sm font-medium text-emerald-600';
+            } catch (err) {
+                status.textContent = 'Invalid JSON: ' + err.message;
+                status.className = 'mt-4 text-center text-sm font-medium text-rose-600';
+            }
+        }
+
+        function validateJSON() {
+            const input = document.getElementById('json-input').value;
+            const status = document.getElementById('status-msg');
+            try {
+                if (!input.trim()) throw new Error('Input is empty.');
+                JSON.parse(input);
+                status.textContent = 'Valid JSON syntax!';
+                status.className = 'mt-4 text-center text-sm font-medium text-emerald-600';
+            } catch (err) {
+                status.textContent = 'Syntax Error: ' + err.message;
+                status.className = 'mt-4 text-center text-sm font-medium text-rose-600';
+            }
+        }
+
+        function clearInput() {
+            document.getElementById('json-input').value = '';
+            document.getElementById('json-output').value = '';
+            document.getElementById('status-msg').textContent = '';
+        }
+
+        function copyOutput() {
+            const output = document.getElementById('json-output');
+            const btn = document.getElementById('copy-btn');
+            output.select();
+            navigator.clipboard.writeText(output.value);
+            btn.textContent = 'Copied!';
+            setTimeout(() => { btn.textContent = 'Copy Result'; }, 2000);
+        }
+    </script>
+    <script src="/ads.js"></script>
+</body>
+</html>
