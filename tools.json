@@ -1,5 +1,14 @@
 [
   {
+    "slug": "calculate-expected-salary-after-raise",
+    "title": "حساب الراتب المتوقع بعد الزيادة السنوية",
+    "category": "Financial Tools",
+    "description": "أداة مجانية لحساب الراتب المتوقع بعد الزيادة السنوية أو نسبة العلاوة المقررة في مصر والسعودية بدقة وسرعة.",
+    "url": "https://mysmarttools.midonageeb94.workers.dev/calculate-expected-salary-after-raise/",
+    "created_at": "2026-11-27 10:52",
+    "pub_date_rfc822": "Fri, 27 Nov 2026 10:52:32 +0000"
+  },
+  {
     "slug": "json-minifier-and-formatter",
     "title": "JSON Minifier and Formatter - Free Online Cleaner",
     "category": "Developer Tools",

@@ -1,0 +1,143 @@
+<<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حساب الراتب المتوقع بعد الزيادة السنوية - احسب زيادتك بسهولة</title>
+    <meta name="description" content="احسب راتبك الجديد المتوقع بعد تطبيق نسبة الزيادة السنوية أو العلاوة في مصر والسعودية. أداة مجانية وسريعة تدعم الحسابات بدقة.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+    </style>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "كيف يتم حساب الراتب بعد الزيادة؟",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "يتم حساب الراتب الجديد بضرب الراتب الحالي في نسبة الزيادة مقسومة على 100، ثم إضافتها إلى الراتب الأساسي."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "هل الأداة مجانية للاستخدام؟",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "نعم، جميع أدواتنا الحسابية مجانية 100% وتعمل مباشرة من متصفحك."
+          }
+        }
+      ]
+    }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <header class="bg-white border-b border-slate-200 py-4 px-6 shadow-sm">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <a href="/" class="text-indigo-600 font-bold hover:underline">Home</a>
+            <h1 class="text-lg font-bold text-slate-700">حساب الراتب المتوقع بعد الزيادة</h1>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-8 flex-grow w-full">
+        <!-- Top Ad Slot -->
+        <div id="ad-slot-top" class="w-full min-h-[90px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6">Ad Space</div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h2 class="text-2xl font-bold mb-6 text-slate-900 text-center">احسب راتبك بعد الزیادة</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-sm font-semibold mb-2 text-slate-700" for="currentSalary">الراتب الحالي (جنيه / ريال)</label>
+                    <input type="number" id="currentSalary" class="w-full p-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="مثال: 10000">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-2 text-slate-700" for="raisePercentage">نسبة الزيادة السنوية (%)</label>
+                    <input type="number" id="raisePercentage" class="w-full p-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="مثال: 10">
+                </div>
+            </div>
+
+            <div class="flex gap-4 mb-8">
+                <button onclick="calculateRaise()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition duration-200">احسب الآن</button>
+                <button onclick="resetForm()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-6 py-3 rounded-xl transition duration-200">إعادة ضبط</button>
+            </div>
+
+            <div id="resultSection" class="hidden bg-indigo-50 border border-indigo-100 rounded-xl p-6 text-center">
+                <h3 class="text-lg font-semibold text-indigo-900 mb-2">نتائج الحساب:</h3>
+                <p class="text-slate-600 text-sm mb-1">قيمة الزيادة السنوية: <span id="raiseAmount" class="font-bold text-indigo-600">0</span></p>
+                <p class="text-slate-600 text-sm mb-4">الراتب المتوقع بعد الزيادة: <span id="newSalary" class="font-bold text-indigo-800 text-xl">0</span></p>
+                <button onclick="copyResult()" class="bg-white border border-indigo-300 text-indigo-700 hover:bg-indigo-100 font-semibold px-4 py-2 rounded-lg text-sm transition duration-200">نسخ النتيجة</button>
+            </div>
+        </div>
+
+        <!-- SEO Guide & FAQ -->
+        <section class="mt-12 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="text-xl font-bold mb-4 text-slate-900">دليل حساب الزيادة السنوية للرواتب</h3>
+            <p class="text-slate-600 mb-4 leading-relaxed">
+                تعتبر الزيادة السنوية للرواتب من أهم الحوافز التي ينتظرها الموظفون في القطاعين الحكومي والخاص في مصر والسعودية. تساعدك هذه الأداة البسيطة على معرفة راتبك الجديد بدقة فور إعلان نسبة العلاوة أو الزيادة المقررة.
+            </p>
+            
+            <h4 class="text-lg font-bold mb-3 text-slate-800 mt-6">الأسئلة الشائعة</h4>
+            <div class="space-y-4">
+                <div>
+                    <h5 class="font-semibold text-slate-800">كيف يتم حساب الراتب بعد الزيادة؟</h5>
+                    <p class="text-slate-600 text-sm">يتم حساب الراتب الجديد بضرب الراتب الحالي في نسبة الزيادة مقسومة على 100، ثم إضافتها إلى الراتب الأساسي.</p>
+                </div>
+                <div>
+                    <h5 class="font-semibold text-slate-800">هل الأداة مجانية للاستخدام؟</h5>
+                    <p class="text-slate-600 text-sm">نعم، جميع أدواتنا الحسابية مجانية 100% وتعمل مباشرة من متصفحك.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bottom Ad Slot -->
+        <div id="ad-slot-bottom" class="w-full min-h-[250px] bg-slate-100 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 my-6">Ad Space</div>
+    <section class="mt-10 pt-8 border-t border-slate-200"><h2 class="text-lg font-extrabold text-slate-800 mb-4">أدوات مجانية أخرى قد تهمك</h2><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><a href="/arabic-tashkeel-remover/" class="block p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 transition"><div class="text-xs font-semibold text-emerald-700 mb-1">أدوات النصوص</div><div class="font-bold text-slate-800 text-sm mb-1">إزالة التشكيل وتنظيف النصوص العربية</div><div class="text-xs text-slate-500">احذف الحركات الإعرابية، الكشيدة، والمسافات الزائدة، ووحّد الهمزات بضغطة زر واحدة.</div></a><a href="/calculate-service-charge-restaurant/" class="block p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 transition"><div class="text-xs font-semibold text-emerald-700 mb-1">Tools</div><div class="font-bold text-slate-800 text-sm mb-1">حساب خدمة المطاعم والنسبة المئوية | أداة حساب الخدمة والضريبة أونلاين</div><div class="text-xs text-slate-500">أداة مجانية لحساب قيمة خدمة المطاعم (Service Charge) والضريبة المضافة على الفواتير بسهولة في مصر والسعودية، لمعرفة المبلغ الإجمالي بدقة قبل الدفع.</div></a><a href="/arabic-word-counter-and-reading-time/" class="block p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 transition"><div class="text-xs font-semibold text-emerald-700 mb-1">أدوات النصوص</div><div class="font-bold text-slate-800 text-sm mb-1">حاسبة الكلمات ووقت القراءة العربي</div><div class="text-xs text-slate-500">أداة دقيقة لحساب عدد الكلمات، الحروف، السطور، وتقدير وقت القراءة للنصوص العربية والانجليزية مباشرة في متصفحك.</div></a><a href="/calculate-personal-loan-installment-egypt-saudi/" class="block p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 transition"><div class="text-xs font-semibold text-emerald-700 mb-1">Financial Tools</div><div class="font-bold text-slate-800 text-sm mb-1">حساب قسط القرض الشخصي في مصر والسعودية</div><div class="text-xs text-slate-500">أداة مجانية وسريعة لحساب الأقساط الشهرية للقروض الشخصية والتمويل في البنوك المصرية والسعودية بدقة.</div></a></div></section>
+</main>
+
+    <footer class="bg-white border-t border-slate-200 py-6 text-center text-slate-500 text-sm">
+        <p>© 2024 جميع الحقوق محفوظة.</p>
+    </footer>
+
+    <script>
+        function calculateRaise() {
+            const current = parseFloat(document.getElementById('currentSalary').value);
+            const percentage = parseFloat(document.getElementById('raisePercentage').value);
+
+            if (isNaN(current) || isNaN(percentage) || current < 0 || percentage < 0) {
+                alert('يرجى إدخال أرقام صحيحة وصالحة.');
+                return;
+            }
+
+            const raiseAmt = (current * percentage) / 100;
+            const totalNew = current + raiseAmt;
+
+            document.getElementById('raiseAmount').innerText = raiseAmt.toFixed(2);
+            document.getElementById('newSalary').innerText = totalNew.toFixed(2);
+            document.getElementById('resultSection').classList.remove('hidden');
+        }
+
+        function resetForm() {
+            document.getElementById('currentSalary').value = '';
+            document.getElementById('raisePercentage').value = '';
+            document.getElementById('resultSection').classList.add('hidden');
+        }
+
+        function copyResult() {
+            const raiseAmt = document.getElementById('raiseAmount').innerText;
+            const newSal = document.getElementById('newSalary').innerText;
+            const text = `قيمة الزيادة: ${raiseAmt} - الراتب المتوقع: ${newSal}`;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('تم نسخ النتيجة بنجاح!');
+            });
+        }
+    </script>
+    <script src="/ads.js"></script>
+</body>
+</html>"
+}
