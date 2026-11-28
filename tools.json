@@ -1,5 +1,14 @@
 [
   {
+    "slug": "calculate-surface-area-cylinder",
+    "title": "حسب مساحة أسطوانة",
+    "category": "Tools",
+    "description": "أداة مجانية لحساب المساحة الجانبية والكلية للإسطوانة بدقة وسرعة مع شرح القوانين الرياضية. مستهدفة للبحث في مصر والسعودية.",
+    "url": "https://mysmarttools.midonageeb94.workers.dev/calculate-surface-area-cylinder/",
+    "created_at": "2026-11-28 10:47",
+    "pub_date_rfc822": "Sat, 28 Nov 2026 10:47:54 +0000"
+  },
+  {
     "slug": "calculate-expected-salary-after-raise",
     "title": "حساب الراتب المتوقع بعد الزيادة السنوية",
     "category": "Financial Tools",
